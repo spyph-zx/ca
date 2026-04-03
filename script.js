@@ -171,44 +171,43 @@ function handleNo() {
 }
 
 function teleportNo() {
+  // Use visualViewport when available — respects mobile browser chrome & keyboard
+  const vw = window.visualViewport ? window.visualViewport.width  : window.innerWidth;
+  const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+
+  const BTN_W  = 110;
+  const BTN_H  = 44;
+  const MARGIN = 28; // generous safe area — never clips on any mobile edge
+
+  const minX = MARGIN;
+  const minY = MARGIN;
+  const maxX = vw - BTN_W  - MARGIN;
+  const maxY = vh - BTN_H  - MARGIN;
+
   if (!noTeleporting) {
-    // Lift button out of card flow onto fixed layer
     const rect = noBtn.getBoundingClientRect();
     noTeleporting = true;
     noBtn.classList.add('teleporting');
-    noBtn.style.width  = rect.width  + 'px';
-    noBtn.style.height = rect.height + 'px';
-    // Start at current position so first move animates from here
-    lastNoX = rect.left;
-    lastNoY = rect.top;
+    lastNoX = Math.min(Math.max(rect.left, minX), maxX);
+    lastNoY = Math.min(Math.max(rect.top,  minY), maxY);
     noBtn.style.left = lastNoX + 'px';
     noBtn.style.top  = lastNoY + 'px';
   }
 
-  const btnW   = parseFloat(noBtn.style.width)  || 110;
-  const btnH   = parseFloat(noBtn.style.height) || 44;
-  const margin = 18;
-  const vw     = window.innerWidth;
-  const vh     = window.innerHeight;
+  if (maxX <= minX || maxY <= minY) return;
 
-  const minX = margin;
-  const minY = margin;
-  const maxX = vw - btnW - margin;
-  const maxY = vh - btnH - margin;
-
-  if (maxX <= minX || maxY <= minY) return; // viewport too small, skip
-
-  let newX, newY;
-  let attempts = 0;
-  const minDist = Math.min(vw, vh) * 0.3; // at least 30% of smaller dimension
+  const minDist = Math.min(vw, vh) * 0.28;
+  let newX, newY, tries = 0;
 
   do {
     newX = minX + Math.random() * (maxX - minX);
     newY = minY + Math.random() * (maxY - minY);
-    const dist = Math.hypot(newX - lastNoX, newY - lastNoY);
-    if (dist >= minDist || attempts > 40) break;
-    attempts++;
-  } while (true);
+    tries++;
+  } while (Math.hypot(newX - lastNoX, newY - lastNoY) < minDist && tries < 60);
+
+  // Hard-clamp — guarantees fully inside viewport no matter what
+  newX = Math.min(Math.max(newX, minX), maxX);
+  newY = Math.min(Math.max(newY, minY), maxY);
 
   lastNoX = newX;
   lastNoY = newY;
@@ -227,17 +226,24 @@ function resetNoButton() {
   noTeleporting = false;
 }
 
-/* Keep no button within bounds on resize */
-window.addEventListener('resize', () => {
+/* Keep no button strictly within bounds on resize / orientation change */
+function clampNoBtn() {
   if (!noTeleporting) return;
-  const btnW   = parseFloat(noBtn.style.width)  || 110;
-  const btnH   = parseFloat(noBtn.style.height) || 44;
-  const margin = 18;
-  const curL   = parseFloat(noBtn.style.left)   || 0;
-  const curT   = parseFloat(noBtn.style.top)    || 0;
-  noBtn.style.left = Math.min(Math.max(curL, margin), window.innerWidth  - btnW - margin) + 'px';
-  noBtn.style.top  = Math.min(Math.max(curT, margin), window.innerHeight - btnH - margin) + 'px';
-});
+  const vw     = window.visualViewport ? window.visualViewport.width  : window.innerWidth;
+  const vh     = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  const BTN_W  = 110;
+  const BTN_H  = 44;
+  const MARGIN = 28;
+  const curL   = parseFloat(noBtn.style.left) || 0;
+  const curT   = parseFloat(noBtn.style.top)  || 0;
+  noBtn.style.left = Math.min(Math.max(curL, MARGIN), vw - BTN_W - MARGIN) + 'px';
+  noBtn.style.top  = Math.min(Math.max(curT, MARGIN), vh - BTN_H - MARGIN) + 'px';
+}
+window.addEventListener('resize', clampNoBtn);
+window.addEventListener('orientationchange', clampNoBtn);
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', clampNoBtn);
+}
 
 /* ═══════════════════════════════════════════════════════════
    SUCCESS BURST RINGS
