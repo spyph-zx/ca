@@ -1,104 +1,595 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>For You 💗</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,600&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+/* ═══════════════════════════════════════════════════════════
+   LOVE CONFESSION — style.css
+   Palette:
+     --blush     #FFB5C8   soft petal pink
+     --rose      #E8436A   vivid rose
+     --magenta   #C2005F   deep magenta
+     --wine      #6E0030   rich burgundy shadow
+     --champagne #FFE8EF   warm ivory highlight
+     --ivory     #FFF4F7   near-white
+     --dusk      #1C0012   near-black background
+   ═══════════════════════════════════════════════════════════ */
 
-  <!-- Cinematic video background (Pexels free stock) -->
-  <video id="bgVideo" autoplay muted loop playsinline>
-    <source src="https://videos.pexels.com/video-files/4763824/4763824-uhd_2560_1440_24fps.mp4" type="video/mp4" />
-  </video>
+/* ── TOKENS ────────────────────────────────────────────── */
+:root {
+  --blush:        #FFB5C8;
+  --rose:         #E8436A;
+  --magenta:      #C2005F;
+  --wine:         #6E0030;
+  --champagne:    #FFE8EF;
+  --ivory:        #FFF4F7;
+  --dusk:         #1C0012;
 
-  <!-- Atmospheric overlays -->
-  <div class="overlay-vignette"></div>
-  <div class="overlay-grain"></div>
+  /* Neon shadow sets — element-matched */
+  --neon-rose:     0 0 8px #E8436A,  0 0 22px #E8436Acc, 0 0 50px #C2005F88;
+  --neon-blush:    0 0 8px #FFB5C8,  0 0 20px #E8436A99, 0 0 40px #C2005F55;
+  --neon-magenta:  0 0 10px #C2005F, 0 0 28px #C2005Fcc, 0 0 55px #6E003088;
+  --neon-champagne:0 0 8px #FFE8EF,  0 0 20px #FFB5C8bb, 0 0 38px #E8436A44;
+  --neon-wine:     0 0 12px #6E0030, 0 0 30px #C2005F99, 0 0 60px #C2005F44;
 
-  <!-- Floating petals -->
-  <div id="petals-container" aria-hidden="true"></div>
+  --font-serif:  'Cormorant Garamond', Georgia, serif;
+  --font-sans:   'Nunito', sans-serif;
 
-  <!-- Floating sparkles -->
-  <div id="sparkles-container" aria-hidden="true"></div>
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-  <!-- Hidden audio -->
-  <audio id="bgMusic" loop>
-    <source src="song.mp3" type="audio/mpeg" />
-  </audio>
+/* ── RESET ─────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0; padding: 0;
+}
 
-  <!-- ═══════════════════════════════
-       SCREEN 1 — INTRO
-  ════════════════════════════════ -->
-  <section id="screen-intro" class="screen active" role="button" tabindex="0" aria-label="Tap to open">
-    <p class="eyebrow" data-anim="fadeUp" style="--delay:0.2s">a message, just for you</p>
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
 
-    <div class="intro-orb" data-anim="scaleIn" style="--delay:0.5s">
-      <div class="orb-ring orb-ring--outer"></div>
-      <div class="orb-ring orb-ring--inner"></div>
-      <span class="orb-heart" aria-hidden="true">💗</span>
-    </div>
+body {
+  font-family: var(--font-sans);
+  background: var(--dusk);
+  color: var(--champagne);
+}
 
-    <h1 class="intro-title" data-anim="fadeUp" style="--delay:0.8s">
-      Something I've been<br /><em>longing</em> to tell you…
-    </h1>
+/* ── VIDEO BACKGROUND ──────────────────────────────────── */
+#bgVideo {
+  position: fixed; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  filter: brightness(0.32) saturate(1.4) hue-rotate(-5deg);
+  pointer-events: none;
+}
 
-    <p class="tap-hint" data-anim="fadeUp" style="--delay:1.3s">
-      <span class="tap-dot"></span> tap to reveal
-    </p>
-  </section>
+/* ── VIGNETTE OVERLAY ──────────────────────────────────── */
+.overlay-vignette {
+  position: fixed; inset: 0; z-index: 1;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 50%, transparent 20%, rgba(28,0,18,0.55) 100%),
+    linear-gradient(to bottom, rgba(28,0,18,0.3) 0%, transparent 40%, transparent 60%, rgba(28,0,18,0.5) 100%);
+  pointer-events: none;
+}
 
-  <!-- ═══════════════════════════════
-       SCREEN 2 — QUESTION CARD
-  ════════════════════════════════ -->
-  <section id="screen-card" class="screen" aria-live="polite">
-    <div class="card">
-      <span class="card-corner tl" aria-hidden="true"></span>
-      <span class="card-corner tr" aria-hidden="true"></span>
-      <span class="card-corner bl" aria-hidden="true"></span>
-      <span class="card-corner br" aria-hidden="true"></span>
+/* ── GRAIN OVERLAY ─────────────────────────────────────── */
+.overlay-grain {
+  position: fixed; inset: 0; z-index: 2;
+  pointer-events: none; opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
 
-      <div class="gif-wrapper">
-        <div class="gif-shimmer" id="gifShimmer"></div>
-        <img id="gif" src="" alt="Cute animated reaction" />
-      </div>
+/* ── PETALS ────────────────────────────────────────────── */
+#petals-container {
+  position: fixed; inset: 0;
+  z-index: 3; pointer-events: none; overflow: hidden;
+}
 
-      <h2 id="question" class="question-text"></h2>
+.petal {
+  position: absolute;
+  border-radius: 80% 20% 80% 20% / 55% 30% 70% 45%;
+  opacity: 0;
+  animation: petalFall linear infinite;
+}
 
-      <div class="step-dots" id="stepDots" aria-hidden="true"></div>
+@keyframes petalFall {
+  0%   { transform: translateY(-80px) translateX(0) rotate(0deg) scale(1);   opacity: 0; }
+  6%   { opacity: 0.8; }
+  50%  { transform: translateY(48vh) translateX(var(--dx)) rotate(200deg) scale(0.82); opacity: 0.65; }
+  94%  { opacity: 0.4; }
+  100% { transform: translateY(108vh) translateX(calc(var(--dx)*1.7)) rotate(380deg) scale(0.6); opacity: 0; }
+}
 
-      <div class="btn-row">
-        <button class="btn btn--yes" id="yes" aria-label="Yes">
-          <span class="btn-icon" aria-hidden="true">💗</span>
-          <span class="btn-label">Yes</span>
-          <span class="btn-ripple" aria-hidden="true"></span>
-        </button>
-        <button class="btn btn--no" id="no" aria-label="No">
-          <span class="btn-label">No…</span>
-        </button>
-      </div>
-    </div>
-  </section>
+/* ── SPARKLES ──────────────────────────────────────────── */
+#sparkles-container {
+  position: fixed; inset: 0;
+  z-index: 3; pointer-events: none; overflow: hidden;
+}
 
-  <!-- ═══════════════════════════════
-       SCREEN 3 — SUCCESS
-  ════════════════════════════════ -->
-  <section id="screen-success" class="screen" aria-live="assertive">
-    <div class="success-burst" id="successBurst" aria-hidden="true"></div>
-    <div class="success-content">
-      <p class="success-emoji" data-anim="popIn" style="--delay:0.1s">💗 🌹 💗</p>
-      <div class="success-divider" data-anim="scaleX" style="--delay:0.5s"></div>
-      <h1 class="success-title" data-anim="fadeUp" style="--delay:0.7s">
-        I knew your heart<br /><em>would say yes…</em>
-      </h1>
-      <p class="success-sub" data-anim="fadeUp" style="--delay:1.1s">forever &amp; always 🌹</p>
-    </div>
-  </section>
+.sparkle {
+  position: absolute;
+  border-radius: 50%;
+  animation: sparklePulse ease-in-out infinite;
+}
 
-  <script src="script.js"></script>
-</body>
-</html>
+@keyframes sparklePulse {
+  0%, 100% { transform: scale(0) rotate(0deg); opacity: 0; }
+  30%       { opacity: 1; }
+  50%       { transform: scale(1) rotate(180deg); opacity: 0.9; }
+  70%       { opacity: 0.5; }
+}
+
+/* ── SCREENS ───────────────────────────────────────────── */
+.screen {
+  position: fixed; inset: 0; z-index: 10;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: clamp(20px, 6vw, 40px);
+  gap: clamp(16px, 4vh, 28px);
+
+  /* Transition when switching */
+  opacity: 0;
+  transform: scale(0.97) translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.55s var(--ease-smooth), transform 0.55s var(--ease-smooth);
+}
+
+.screen.active {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: all;
+}
+
+.screen.exit {
+  opacity: 0;
+  transform: scale(1.04) translateY(-10px);
+  pointer-events: none;
+}
+
+/* ── [data-anim] ENTRY HELPERS ─────────────────────────── */
+[data-anim] {
+  opacity: 0;
+}
+[data-anim="fadeUp"] {
+  transform: translateY(18px);
+  transition: opacity 0.7s var(--ease-smooth) var(--delay, 0s),
+              transform 0.7s var(--ease-smooth) var(--delay, 0s);
+}
+[data-anim="scaleIn"] {
+  transform: scale(0.6);
+  transition: opacity 0.7s var(--ease-bounce) var(--delay, 0s),
+              transform 0.7s var(--ease-bounce) var(--delay, 0s);
+}
+[data-anim="scaleX"] {
+  transform: scaleX(0);
+  transition: opacity 0.5s var(--ease-smooth) var(--delay, 0s),
+              transform 0.5s var(--ease-smooth) var(--delay, 0s);
+}
+[data-anim="popIn"] {
+  transform: scale(0.4);
+  transition: opacity 0.6s var(--ease-bounce) var(--delay, 0s),
+              transform 0.6s var(--ease-bounce) var(--delay, 0s);
+}
+
+.screen.active [data-anim],
+#screen-success.active [data-anim] {
+  opacity: 1;
+  transform: none;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCREEN 1 — INTRO
+   ═══════════════════════════════════════════════════════ */
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: clamp(10px, 2.8vw, 13px);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--blush);
+  text-shadow: var(--neon-blush);
+}
+
+/* Orb */
+.intro-orb {
+  position: relative;
+  width: clamp(140px, 44vw, 200px);
+  height: clamp(140px, 44vw, 200px);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+
+.orb-ring {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid;
+  animation: orbSpin linear infinite;
+}
+
+.orb-ring--outer {
+  border-color: rgba(232,67,106,0.6);
+  box-shadow: var(--neon-rose), inset 0 0 28px rgba(232,67,106,0.1);
+  animation-duration: 12s;
+}
+
+.orb-ring--inner {
+  inset: 14px;
+  border-color: rgba(194,0,95,0.45);
+  box-shadow: var(--neon-magenta);
+  animation-duration: 8s;
+  animation-direction: reverse;
+}
+
+@keyframes orbSpin {
+  to { transform: rotate(360deg); }
+}
+
+.orb-heart {
+  font-size: clamp(52px, 16vw, 76px);
+  animation: heartbeat 2s ease-in-out infinite;
+  filter:
+    drop-shadow(0 0 12px #E8436A)
+    drop-shadow(0 0 28px #C2005F)
+    drop-shadow(0 0 50px #6E003088);
+  z-index: 2;
+  position: relative;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14%       { transform: scale(1.18); }
+  28%       { transform: scale(0.97); }
+  42%       { transform: scale(1.10); }
+  56%       { transform: scale(1); }
+}
+
+.intro-title {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-style: normal;
+  font-size: clamp(24px, 7.5vw, 42px);
+  color: var(--champagne);
+  text-shadow: var(--neon-champagne);
+  text-align: center;
+  line-height: 1.28;
+}
+
+.intro-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--blush);
+  text-shadow: var(--neon-blush);
+}
+
+.tap-hint {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: clamp(10px, 3vw, 12px);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,181,200,0.65);
+}
+
+.tap-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--rose);
+  box-shadow: var(--neon-rose);
+  animation: dotBlink 1.8s ease-in-out infinite;
+}
+
+@keyframes dotBlink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.3; transform: scale(0.6); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCREEN 2 — QUESTION CARD
+   ═══════════════════════════════════════════════════════ */
+
+.card {
+  position: relative;
+  width: min(88vw, 360px);
+  padding: clamp(22px, 6vw, 34px) clamp(20px, 5vw, 30px) clamp(20px, 5vw, 28px);
+  border-radius: 28px;
+  background: linear-gradient(
+    145deg,
+    rgba(255,181,200,0.10) 0%,
+    rgba(194,0,95,0.07)   60%,
+    rgba(110,0,48,0.12)   100%
+  );
+  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  border: 1.5px solid rgba(232,67,106,0.5);
+  box-shadow: var(--neon-rose), 0 8px 48px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(14px, 3.5vh, 20px);
+}
+
+/* Corner accents */
+.card-corner {
+  position: absolute;
+  width: 16px; height: 16px;
+  border-color: var(--rose);
+  border-style: solid;
+  box-shadow: var(--neon-rose);
+}
+.card-corner.tl { top: 10px; left: 10px; border-width: 2px 0 0 2px; border-radius: 4px 0 0 0; }
+.card-corner.tr { top: 10px; right: 10px; border-width: 2px 2px 0 0; border-radius: 0 4px 0 0; }
+.card-corner.bl { bottom: 10px; left: 10px; border-width: 0 0 2px 2px; border-radius: 0 0 0 4px; }
+.card-corner.br { bottom: 10px; right: 10px; border-width: 0 2px 2px 0; border-radius: 0 0 4px 0; }
+
+/* GIF */
+.gif-wrapper {
+  width: 100%;
+  max-width: 210px;
+  aspect-ratio: 1 / 1;
+  border-radius: 18px;
+  overflow: hidden;
+  position: relative;
+  border: 1.5px solid rgba(232,67,106,0.35);
+  box-shadow: 0 0 16px #E8436A55, 0 0 36px #C2005F33, 0 4px 24px rgba(0,0,0,0.4);
+}
+
+.gif-shimmer {
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255,181,200,0.18) 40%,
+    rgba(255,181,200,0.28) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: inherit;
+  display: none;
+}
+
+.gif-shimmer.active {
+  display: block;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+#gif {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-smooth);
+}
+
+#gif.loaded { opacity: 1; }
+
+/* Question text */
+.question-text {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(19px, 5.8vw, 27px);
+  color: var(--champagne);
+  text-shadow: var(--neon-champagne);
+  text-align: center;
+  line-height: 1.38;
+  padding: 0 4px;
+  min-height: 2.8em;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Step dots */
+.step-dots {
+  display: flex; gap: 6px; align-items: center;
+}
+
+.step-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(255,181,200,0.25);
+  border: 1px solid rgba(232,67,106,0.4);
+  transition: background 0.35s, box-shadow 0.35s, transform 0.35s;
+}
+
+.step-dot.active {
+  background: var(--rose);
+  box-shadow: var(--neon-rose);
+  transform: scale(1.35);
+}
+
+.step-dot.done {
+  background: rgba(194,0,95,0.5);
+  box-shadow: 0 0 6px #C2005F77;
+}
+
+/* Buttons */
+.btn-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  justify-content: center;
+}
+
+.btn {
+  position: relative;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  flex: 1;
+  max-width: 140px;
+  padding: clamp(11px,3vw,14px) 12px;
+  border-radius: 50px;
+  border: 1.5px solid;
+  font-family: var(--font-sans);
+  font-size: clamp(13px, 4vw, 15px);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.22s var(--ease-bounce), box-shadow 0.22s ease;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+/* YES button */
+.btn--yes {
+  background: linear-gradient(135deg, var(--rose) 0%, var(--magenta) 100%);
+  border-color: var(--blush);
+  color: var(--ivory);
+  box-shadow: var(--neon-rose), 0 4px 20px rgba(194,0,95,0.45);
+  text-shadow: 0 0 8px rgba(255,244,247,0.6);
+}
+
+.btn--yes:hover {
+  transform: scale(1.07) translateY(-1px);
+  box-shadow: 0 0 18px #E8436A, 0 0 40px #C2005F, 0 0 70px #6E003066, 0 6px 28px rgba(194,0,95,0.5);
+}
+
+.btn--yes:active { transform: scale(0.97); }
+
+.btn-icon {
+  font-size: 1.1em;
+  filter: drop-shadow(0 0 6px #FFB5C8);
+}
+
+/* Ripple on YES */
+.btn-ripple {
+  position: absolute;
+  border-radius: 50%;
+  width: 10px; height: 10px;
+  background: rgba(255,244,247,0.45);
+  transform: scale(0);
+  animation: none;
+  pointer-events: none;
+}
+
+.btn--yes:active .btn-ripple {
+  animation: rippleOut 0.5s ease-out forwards;
+}
+
+@keyframes rippleOut {
+  to { transform: scale(28); opacity: 0; }
+}
+
+/* NO button */
+.btn--no {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,181,200,0.35);
+  color: var(--blush);
+  box-shadow: 0 0 10px rgba(255,181,200,0.18), 0 0 24px rgba(194,0,95,0.12);
+  text-shadow: 0 0 8px rgba(255,181,200,0.6);
+}
+
+.btn--no:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 14px rgba(255,181,200,0.35), 0 0 32px rgba(194,0,95,0.25);
+}
+
+.btn--no:active { transform: scale(0.95); }
+
+/* NO button teleport state */
+.btn--no.teleporting {
+  position: fixed !important;
+  z-index: 50;
+  margin: 0;
+  flex: unset;
+  width: 110px;
+  transition:
+    left 0.22s var(--ease-bounce),
+    top 0.22s var(--ease-bounce),
+    box-shadow 0.22s ease;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCREEN 3 — SUCCESS
+   ═══════════════════════════════════════════════════════ */
+
+#screen-success {
+  gap: clamp(16px, 4vh, 26px);
+}
+
+/* Burst ring animation */
+.success-burst {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.burst-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid;
+  animation: burstExpand 1.6s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes burstExpand {
+  0%   { transform: scale(0.1); opacity: 0.9; }
+  100% { transform: scale(4.5); opacity: 0; }
+}
+
+.success-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(14px, 3.5vh, 22px);
+  text-align: center;
+  position: relative; z-index: 2;
+}
+
+.success-emoji {
+  font-size: clamp(30px, 10vw, 48px);
+  filter:
+    drop-shadow(0 0 14px #E8436A)
+    drop-shadow(0 0 30px #C2005F);
+}
+
+.success-divider {
+  width: 72px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rose), transparent);
+  box-shadow: 0 0 10px var(--rose), 0 0 22px rgba(194,0,95,0.5);
+  transform-origin: center;
+}
+
+.success-title {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(26px, 8vw, 44px);
+  color: var(--champagne);
+  text-shadow: var(--neon-champagne);
+  line-height: 1.3;
+}
+
+.success-title em {
+  font-style: italic;
+  font-weight: 600;
+  color: var(--blush);
+  text-shadow: var(--neon-blush);
+}
+
+.success-sub {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: clamp(11px, 3.2vw, 14px);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255,181,200,0.7);
+  text-shadow: var(--neon-blush);
+}
+
+/* ── TOUCH DEVICE ADJUSTMENTS ──────────────────────────── */
+@media (hover: none) and (pointer: coarse) {
+  .btn--yes:hover { transform: none; box-shadow: var(--neon-rose), 0 4px 20px rgba(194,0,95,0.45); }
+  .btn--no:hover  { transform: none; box-shadow: 0 0 10px rgba(255,181,200,0.18); }
+}
+
+/* ── TALL PHONE SPACING ─────────────────────────────────── */
+@media (min-height: 750px) {
+  .screen { gap: clamp(20px, 5vh, 36px); }
+}
