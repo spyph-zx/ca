@@ -171,41 +171,48 @@ function handleNo() {
 }
 
 function teleportNo() {
-  // Use visualViewport when available — respects mobile browser chrome & keyboard
-  const vw = window.visualViewport ? window.visualViewport.width  : window.innerWidth;
-  const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  /* ── WHY WE MOVE THE BUTTON TO BODY ──────────────────────
+     .screen has CSS transform (scale) which breaks
+     position:fixed — fixed children position relative to
+     the transformed ancestor, not the viewport.
+     Solution: physically move noBtn to document.body so it
+     sits outside any transform context entirely.
+  ──────────────────────────────────────────────────────── */
+  if (!noTeleporting) {
+    noTeleporting = true;
+    // Clone styles then reparent to body
+    noBtn.classList.add('teleporting');
+    document.body.appendChild(noBtn);
+    // Seed last position to centre so first jump is always far
+    lastNoX = window.innerWidth  / 2;
+    lastNoY = window.innerHeight / 2;
+  }
+
+  // clientWidth/Height is the gold standard for available CSS pixels on mobile
+  const vw = document.documentElement.clientWidth;
+  const vh = document.documentElement.clientHeight;
 
   const BTN_W  = 110;
-  const BTN_H  = 44;
-  const MARGIN = 28; // generous safe area — never clips on any mobile edge
+  const BTN_H  = 48;
+  const MARGIN = 32; // extra breathing room from all edges
 
   const minX = MARGIN;
   const minY = MARGIN;
   const maxX = vw - BTN_W  - MARGIN;
   const maxY = vh - BTN_H  - MARGIN;
 
-  if (!noTeleporting) {
-    const rect = noBtn.getBoundingClientRect();
-    noTeleporting = true;
-    noBtn.classList.add('teleporting');
-    lastNoX = Math.min(Math.max(rect.left, minX), maxX);
-    lastNoY = Math.min(Math.max(rect.top,  minY), maxY);
-    noBtn.style.left = lastNoX + 'px';
-    noBtn.style.top  = lastNoY + 'px';
-  }
+  if (maxX < minX || maxY < minY) return;
 
-  if (maxX <= minX || maxY <= minY) return;
-
-  const minDist = Math.min(vw, vh) * 0.28;
+  // Keep trying until we land at least 30% of screen away from last spot
+  const minDist = Math.min(vw, vh) * 0.30;
   let newX, newY, tries = 0;
-
   do {
     newX = minX + Math.random() * (maxX - minX);
     newY = minY + Math.random() * (maxY - minY);
     tries++;
-  } while (Math.hypot(newX - lastNoX, newY - lastNoY) < minDist && tries < 60);
+  } while (Math.hypot(newX - lastNoX, newY - lastNoY) < minDist && tries < 80);
 
-  // Hard-clamp — guarantees fully inside viewport no matter what
+  // Final hard-clamp — mathematically impossible to escape screen
   newX = Math.min(Math.max(newX, minX), maxX);
   newY = Math.min(Math.max(newY, minY), maxY);
 
@@ -218,32 +225,32 @@ function teleportNo() {
 
 function resetNoButton() {
   if (!noTeleporting) return;
+  // Move button back into the card's btn-row
+  const btnRow = document.querySelector('.btn-row');
+  if (btnRow && !btnRow.contains(noBtn)) btnRow.appendChild(noBtn);
   noBtn.classList.remove('teleporting');
   noBtn.style.left = '';
   noBtn.style.top  = '';
-  noBtn.style.width  = '';
-  noBtn.style.height = '';
   noTeleporting = false;
+  lastNoX = -1;
+  lastNoY = -1;
 }
 
-/* Keep no button strictly within bounds on resize / orientation change */
+/* Re-clamp on resize / orientation flip */
 function clampNoBtn() {
   if (!noTeleporting) return;
-  const vw     = window.visualViewport ? window.visualViewport.width  : window.innerWidth;
-  const vh     = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  const vw     = document.documentElement.clientWidth;
+  const vh     = document.documentElement.clientHeight;
   const BTN_W  = 110;
-  const BTN_H  = 44;
-  const MARGIN = 28;
+  const BTN_H  = 48;
+  const MARGIN = 32;
   const curL   = parseFloat(noBtn.style.left) || 0;
   const curT   = parseFloat(noBtn.style.top)  || 0;
   noBtn.style.left = Math.min(Math.max(curL, MARGIN), vw - BTN_W - MARGIN) + 'px';
   noBtn.style.top  = Math.min(Math.max(curT, MARGIN), vh - BTN_H - MARGIN) + 'px';
 }
 window.addEventListener('resize', clampNoBtn);
-window.addEventListener('orientationchange', clampNoBtn);
-if (window.visualViewport) {
-  window.visualViewport.addEventListener('resize', clampNoBtn);
-}
+window.addEventListener('orientationchange', () => setTimeout(clampNoBtn, 120));
 
 /* ═══════════════════════════════════════════════════════════
    SUCCESS BURST RINGS
