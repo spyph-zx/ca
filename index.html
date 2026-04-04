@@ -11,27 +11,23 @@
 </head>
 <body>
 
-  <!-- Background image -->
+  <!-- Background image — always visible -->
   <div id="bgImage"></div>
-
-  <!-- Atmospheric overlays -->
   <div class="overlay-vignette"></div>
   <div class="overlay-grain"></div>
 
-  <!-- Floating petals -->
+  <!-- Petals + sparkles -->
   <div id="petals-container" aria-hidden="true"></div>
-
-  <!-- Floating sparkles -->
   <div id="sparkles-container" aria-hidden="true"></div>
 
-  <!-- Hidden audio -->
+  <!-- Background music -->
   <audio id="bgMusic" loop>
     <source src="song.mp3" type="audio/mpeg" />
   </audio>
 
-  <!-- ═══════════════════════════════
-       SCREEN 1 — INTRO
-  ════════════════════════════════ -->
+  <!-- ══════════════════════════════════════
+       SCREEN 1 — INTRO  (tap to begin)
+  ══════════════════════════════════════ -->
   <section id="screen-intro" class="screen active" role="button" tabindex="0" aria-label="Tap to open">
     <p class="eyebrow" data-anim="fadeUp" style="--delay:0.2s">a message, just for you</p>
 
@@ -50,50 +46,72 @@
     </p>
   </section>
 
-  <!-- ═══════════════════════════════
+  <!-- ══════════════════════════════════════
        SCREEN 2 — QUESTION CARD
-  ════════════════════════════════ -->
+       GIF shown without any box/window
+  ══════════════════════════════════════ -->
   <section id="screen-card" class="screen" aria-live="polite">
-    <div class="card">
-      <span class="card-corner tl" aria-hidden="true"></span>
-      <span class="card-corner tr" aria-hidden="true"></span>
-      <span class="card-corner bl" aria-hidden="true"></span>
-      <span class="card-corner br" aria-hidden="true"></span>
-
-      <div class="gif-wrapper">
-        <div class="gif-shimmer" id="gifShimmer"></div>
-        <img id="gif" src="" alt="Cute animated reaction" />
-      </div>
-
-      <h2 id="question" class="question-text"></h2>
-
-      <div class="step-dots" id="stepDots" aria-hidden="true"></div>
-
-      <div class="btn-row">
-        <button class="btn btn--yes" id="yes" aria-label="Yes">
-          <span class="btn-icon" aria-hidden="true">💗</span>
-          <span class="btn-label">Yes</span>
-          <span class="btn-ripple" aria-hidden="true"></span>
-        </button>
-        <button class="btn btn--no" id="no" aria-label="No">
-          <span class="btn-label">No…</span>
-        </button>
-      </div>
+    <img id="gif" src="" alt="" />
+    <h2 id="question" class="question-text"></h2>
+    <div class="step-dots" id="stepDots" aria-hidden="true"></div>
+    <div class="btn-row" id="btnRow">
+      <button class="btn btn--yes" id="yes" aria-label="Yes">
+        <span class="btn-icon" aria-hidden="true">💗</span>
+        <span class="btn-label">Yes</span>
+        <span class="btn-ripple" aria-hidden="true"></span>
+      </button>
+      <button class="btn btn--no" id="no" aria-label="No">
+        <span class="btn-label">No…</span>
+      </button>
     </div>
   </section>
 
-  <!-- ═══════════════════════════════
-       SCREEN 3 — SUCCESS
-  ════════════════════════════════ -->
+  <!-- ══════════════════════════════════════
+       SCREEN 3 — VIDEO 1
+       Autoplays when first "No" is clicked
+  ══════════════════════════════════════ -->
+  <section id="screen-video1" class="screen">
+    <video id="vid1" class="fullscreen-video" playsinline muted loop>
+      <source src="video.mp4" type="video/mp4" />
+    </video>
+    <div class="video-overlay">
+      <p class="video-caption" data-anim="fadeUp" style="--delay:0.4s">watch this… 🎬</p>
+      <button class="btn btn--next" id="skipVideo1">
+        <span class="btn-label">Continue 💗</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       SCREEN 4 — SUCCESS
+       Shows after Yes is pressed
+  ══════════════════════════════════════ -->
   <section id="screen-success" class="screen" aria-live="assertive">
     <div class="success-burst" id="successBurst" aria-hidden="true"></div>
     <div class="success-content">
+      <img id="successGif" src="gif6.gif" alt="" class="success-gif" />
       <p class="success-emoji" data-anim="popIn" style="--delay:0.1s">💗 🌹 💗</p>
       <div class="success-divider" data-anim="scaleX" style="--delay:0.5s"></div>
       <h1 class="success-title" data-anim="fadeUp" style="--delay:0.7s">
         I knew your heart<br /><em>would say yes…</em>
       </h1>
-      <p class="success-sub" data-anim="fadeUp" style="--delay:1.1s">forever &amp; always 🌹</p>
+      <p class="success-sub" data-anim="fadeUp" style="--delay:1.0s">forever &amp; always 🌹</p>
+      <button class="btn btn--next" id="nextAfterSuccess" data-anim="fadeUp" style="--delay:1.3s">
+        <span class="btn-label">Next 💗</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       SCREEN 5 — VIDEO 2
+       Autoplays when "Next" is clicked on success
+  ══════════════════════════════════════ -->
+  <section id="screen-video2" class="screen">
+    <video id="vid2" class="fullscreen-video" playsinline muted loop>
+      <source src="video2.mp4" type="video/mp4" />
+    </video>
+    <div class="video-overlay">
+      <p class="video-caption" data-anim="fadeUp" style="--delay:0.4s">this is for you 💗</p>
     </div>
   </section>
 
