@@ -205,10 +205,63 @@ body { font-family: var(--font-sans); background: var(--dusk); color: var(--cham
   width: clamp(150px, 52vw, 230px);
   height: clamp(150px, 52vw, 230px);
   object-fit: contain; border-radius: 16px;
-  opacity: 0; transition: opacity 0.4s var(--ease-smooth);
-  filter: drop-shadow(0 0 18px rgba(232,67,106,0.45)) drop-shadow(0 0 38px rgba(194,0,95,0.25));
+  opacity: 0;
+  transition: opacity 0.18s ease, filter 0.4s ease;
 }
 #gif.loaded { opacity: 1; }
+
+/* ── PER-SCENE GLOW EFFECTS ────────────────────────────────
+   Each scene gets a unique animated glow that pulses while
+   the user reads the text. Pure filter: drop-shadow so it
+   follows the shape of the GIF with no box clipping.
+────────────────────────────────────────────────────────── */
+
+/* Scene 0 — soft rose pulse */
+#gif.glow-scene0 {
+  animation: glowScene0 2.2s ease-in-out infinite;
+}
+@keyframes glowScene0 {
+  0%,100% { filter: drop-shadow(0 0 10px #E8436Acc) drop-shadow(0 0 28px #C2005F88); }
+  50%      { filter: drop-shadow(0 0 22px #FF6B9D) drop-shadow(0 0 50px #E8436Aee) drop-shadow(0 0 70px #C2005Faa); }
+}
+
+/* Scene 1 — magenta/wine flicker */
+#gif.glow-scene1 {
+  animation: glowScene1 1.8s ease-in-out infinite;
+}
+@keyframes glowScene1 {
+  0%,100% { filter: drop-shadow(0 0 8px #C2005Fcc)  drop-shadow(0 0 24px #6E003088); }
+  40%      { filter: drop-shadow(0 0 20px #C2005F)   drop-shadow(0 0 44px #6E0030cc) drop-shadow(0 0 64px #C2005F66); }
+  70%      { filter: drop-shadow(0 0 12px #E8436Aaa) drop-shadow(0 0 30px #C2005F99); }
+}
+
+/* Scene 2 — blush shimmer */
+#gif.glow-scene2 {
+  animation: glowScene2 2.6s ease-in-out infinite;
+}
+@keyframes glowScene2 {
+  0%,100% { filter: drop-shadow(0 0 12px #FFB5C8bb) drop-shadow(0 0 30px #E8436A66); }
+  33%      { filter: drop-shadow(0 0 26px #FFB5C8)   drop-shadow(0 0 52px #FF6B9Dcc) drop-shadow(0 0 72px #E8436A88); }
+  66%      { filter: drop-shadow(0 0 8px #FFE8EFaa)  drop-shadow(0 0 22px #FFB5C877); }
+}
+
+/* Scene 3 — deep wine throb */
+#gif.glow-scene3 {
+  animation: glowScene3 2s ease-in-out infinite;
+}
+@keyframes glowScene3 {
+  0%,100% { filter: drop-shadow(0 0 14px #6E0030cc) drop-shadow(0 0 32px #C2005F88); }
+  50%      { filter: drop-shadow(0 0 28px #6E0030)   drop-shadow(0 0 56px #C2005Fee) drop-shadow(0 0 80px #E8436A77); }
+}
+
+/* Scene 4 — urgent neon rose flare */
+#gif.glow-scene4 {
+  animation: glowScene4 1.4s ease-in-out infinite;
+}
+@keyframes glowScene4 {
+  0%,100% { filter: drop-shadow(0 0 16px #E8436A) drop-shadow(0 0 36px #C2005Fcc) drop-shadow(0 0 60px #FF6B9D88); }
+  50%      { filter: drop-shadow(0 0 32px #FF6B9D) drop-shadow(0 0 60px #E8436A)   drop-shadow(0 0 90px #C2005Fee); }
+}
 
 .question-text {
   font-family: var(--font-serif); font-style: italic; font-weight: 400;
