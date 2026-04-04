@@ -270,9 +270,7 @@ skipVideo1.addEventListener('click', leaveVideo1);
 nextAfterSuccess.addEventListener('click', () => {
   showScreen(video2Screen);
 
-  // Start vid2 muted first (bypasses mobile autoplay block),
-  // then immediately unmute so its audio is heard from frame 1.
-  // Simultaneously fade mp3 out over 2s — they overlap briefly then mp3 is gone.
+  // Start vid2 immediately
   vid2.currentTime = 0;
   vid2.muted       = true;
   vid2.play().then(() => {
@@ -280,7 +278,10 @@ nextAfterSuccess.addEventListener('click', () => {
     vid2.volume = 1.0;
   }).catch(() => {});
 
-  fadeOutMusic(2000);
+  // Pause mp3 after 1 second
+  setTimeout(() => {
+    music.pause();
+  }, 1000);
 });
 
 /* ══════════════════════════════════════════════════════════
