@@ -413,65 +413,106 @@ body {
 
 /* ══════════════════════════════════════════════════════════
    SCREEN 3 & 5 — VIDEO SCREENS
-   Video is a floating card — background always shows through
+   Floating glowing window — background always visible around it
 ══════════════════════════════════════════════════════════ */
 
 #screen-video1,
 #screen-video2 {
-  padding: clamp(24px, 7vw, 44px);
-  gap: clamp(18px, 4vh, 28px);
-  /* background stays visible — no padding:0 */
+  padding: clamp(20px, 5vw, 36px);
+  gap: clamp(14px, 3.5vh, 22px);
 }
 
-/* The video card container */
+/* ── VIDEO WINDOW FRAME ────────────────────────────────
+   Looks like a phone-within-phone / glowing cinema frame.
+   Fixed height so it never overflows the mobile screen.
+─────────────────────────────────────────────────────── */
 .video-card {
   position: relative;
-  width: min(90vw, 360px);
-  border-radius: 24px;
+  /* Width fills most of the screen, height capped so content stays visible */
+  width: min(88vw, 320px);
+  height: min(56vh, 480px);
+  border-radius: 22px;
   overflow: hidden;
-  /* Layered reddish-pink glowing border */
-  border: 2px solid rgba(255, 107, 157, 0.75);
+  flex-shrink: 0;
+
+  /* Thick glowing border — reddish-pink neon */
+  border: 2.5px solid rgba(255, 107, 157, 0.90);
+  outline: 1px solid rgba(255, 107, 157, 0.25);
+
+  /* Deep layered glow — pulses */
   box-shadow:
-    0 0 0 1px rgba(255, 107, 157, 0.30),
-    0 0 16px #FF6B9D,
-    0 0 36px #E8436Acc,
-    0 0 65px #C2005F88,
-    0 0 100px #6E003055;
-  animation: videoGlow 2.5s ease-in-out infinite;
+    0 0 0 1px rgba(255,107,157,0.20),
+    0 0 12px #FF6B9D,
+    0 0 28px #E8436Aee,
+    0 0 55px #C2005Fbb,
+    0 0 85px #6E003066,
+    inset 0 0 30px rgba(232,67,106,0.08);
+  animation: videoGlow 2.2s ease-in-out infinite;
+
+  /* Semi-transparent dark backdrop inside the frame */
+  background: rgba(28, 0, 18, 0.20);
+}
+
+/* Corner accent marks — cinema-style */
+.video-card::before,
+.video-card::after {
+  content: '';
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  width: 22px; height: 22px;
+  border-color: rgba(255,107,157,0.85);
+  border-style: solid;
+  box-shadow: 0 0 8px #FF6B9D;
+}
+.video-card::before {
+  top: 8px; left: 8px;
+  border-width: 2px 0 0 2px;
+  border-radius: 5px 0 0 0;
+}
+.video-card::after {
+  bottom: 8px; right: 8px;
+  border-width: 0 2px 2px 0;
+  border-radius: 0 0 5px 0;
 }
 
 @keyframes videoGlow {
   0%, 100% {
     box-shadow:
-      0 0 0 1px rgba(255,107,157,0.30),
-      0 0 16px #FF6B9D,
-      0 0 36px #E8436Acc,
-      0 0 65px #C2005F88,
-      0 0 100px #6E003055;
+      0 0 0 1px rgba(255,107,157,0.20),
+      0 0 12px #FF6B9D,
+      0 0 28px #E8436Aee,
+      0 0 55px #C2005Fbb,
+      0 0 85px #6E003066,
+      inset 0 0 30px rgba(232,67,106,0.08);
   }
   50% {
     box-shadow:
-      0 0 0 2px rgba(255,107,157,0.55),
-      0 0 26px #FF6B9D,
-      0 0 55px #E8436A,
-      0 0 90px #C2005Fcc,
-      0 0 130px #6E003088;
+      0 0 0 2px rgba(255,107,157,0.50),
+      0 0 22px #FF6B9D,
+      0 0 48px #E8436A,
+      0 0 82px #C2005Fdd,
+      0 0 120px #6E003099,
+      inset 0 0 50px rgba(232,67,106,0.12);
   }
 }
 
-/* The actual video element — fills the card */
+/* Video fills the frame completely */
 .video-card video {
   display: block;
   width: 100%;
-  aspect-ratio: 9 / 16;
+  height: 100%;
   object-fit: cover;
-  border-radius: 22px;
+  border-radius: 20px;
+  position: relative;
+  z-index: 1;
 }
 
+/* Caption above the video window */
 .video-caption {
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: clamp(18px, 5.5vw, 26px);
+  font-size: clamp(17px, 5vw, 24px);
   color: var(--champagne);
   text-shadow: var(--neon-champagne);
   text-align: center;
