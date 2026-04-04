@@ -253,19 +253,16 @@ skipVideo1.addEventListener('click', leaveVideo1);
       vid2 is already buffered, so play is instant.
 ══════════════════════════════════════════════════════════ */
 nextAfterSuccess.addEventListener('click', () => {
-  // Transition screen immediately — CSS handles the fade
-  showScreen(video2Screen, () => {
-    // Screen fully visible — start vid2 (already buffered)
-    vid2.muted       = false;
-    vid2.volume      = 1.0;
-    vid2.currentTime = 0;
-    vid2.play().catch(() => {
-      // Mobile may block unmuted autoplay; vid2 is visible so user can tap
-    });
-  });
+  showScreen(video2Screen);
 
-  // Fade music in parallel with the screen fade
-  fadeOutMusic(600);
+  // Start vid2 immediately (already buffered)
+  vid2.muted       = false;
+  vid2.volume      = 1.0;
+  vid2.currentTime = 0;
+  vid2.play().catch(() => {});
+
+  // Fade out mp3 over 2 seconds while vid2 audio plays
+  fadeOutMusic(2000);
 });
 
 /* ══════════════════════════════════════════════════════════
