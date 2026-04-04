@@ -191,11 +191,18 @@ skipVideo1.addEventListener('click', () => {
 });
 
 /* ══════════════════════════════════════════════════════════
-   SCREEN 4 — SUCCESS "Next" → play video2.mp4
+   SCREEN 4 — SUCCESS "Next" → play video2.mp4 with its own audio
+   bgMusic pauses so video2's audio is heard clearly
 ══════════════════════════════════════════════════════════ */
 nextAfterSuccess.addEventListener('click', () => {
+  // Pause background music so video2's own audio plays cleanly
+  music.pause();
   vid2.currentTime = 0;
-  vid2.play().catch(() => {});
+  vid2.muted = false;           // ensure audio is on
+  vid2.volume = 1.0;
+  vid2.play().catch(() => {
+    // If autoplay with audio is blocked, still show the screen
+  });
   showScreen(video2Screen);
 });
 
