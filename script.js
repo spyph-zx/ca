@@ -255,13 +255,16 @@ skipVideo1.addEventListener('click', leaveVideo1);
 nextAfterSuccess.addEventListener('click', () => {
   showScreen(video2Screen);
 
-  // Start vid2 immediately (already buffered)
-  vid2.muted       = false;
-  vid2.volume      = 1.0;
+  // Start vid2 muted first (bypasses mobile autoplay block),
+  // then immediately unmute so its audio is heard from frame 1.
+  // Simultaneously fade mp3 out over 2s — they overlap briefly then mp3 is gone.
   vid2.currentTime = 0;
-  vid2.play().catch(() => {});
+  vid2.muted       = true;
+  vid2.play().then(() => {
+    vid2.muted  = false;
+    vid2.volume = 1.0;
+  }).catch(() => {});
 
-  // Fade out mp3 over 2 seconds while vid2 audio plays
   fadeOutMusic(2000);
 });
 
