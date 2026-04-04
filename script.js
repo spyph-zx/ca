@@ -140,7 +140,22 @@ function fadeInMusic(durationMs) {
    interaction so nothing else can be in-flight.
 ══════════════════════════════════════════════════════════ */
 function startExperience() {
-  transitioning = false; // ensure clean state before first transition
+  transitioning = false;
+
+  // Unlock audio context on first user gesture by playing a silent
+  // zero-duration clip — this warms up the audio engine so that
+  // vid2.muted=false works immediately regardless of when Yes is clicked.
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (AudioContext) {
+    const ctx = new AudioContext();
+    const buf = ctx.createBuffer(1, 1, 22050);
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.connect(ctx.destination);
+    src.start(0);
+    src.onended = () => ctx.close();
+  }
+
   music.volume = 1.0;
   music.play().catch(() => {});
   showScreen(cardScreen);
