@@ -71,15 +71,15 @@
        Autoplays when first "No" is clicked
   ══════════════════════════════════════ -->
   <section id="screen-video1" class="screen">
-    <video id="vid1" class="fullscreen-video" playsinline muted loop>
-      <source src="video.mp4" type="video/mp4" />
-    </video>
-    <div class="video-overlay">
-      <p class="video-caption" data-anim="fadeUp" style="--delay:0.4s">watch this… 🎬</p>
-      <button class="btn btn--next" id="skipVideo1">
-        <span class="btn-label">Continue 💗</span>
-      </button>
+    <p class="video-caption" data-anim="fadeUp" style="--delay:0.2s">watch this… 🎬</p>
+    <div class="video-card">
+      <video id="vid1" playsinline muted loop>
+        <source src="video.mp4" type="video/mp4" />
+      </video>
     </div>
+    <button class="btn btn--next" id="skipVideo1" data-anim="fadeUp" style="--delay:0.5s">
+      <span class="btn-label">Continue 💗</span>
+    </button>
   </section>
 
   <!-- ══════════════════════════════════════
@@ -107,11 +107,11 @@
        Autoplays when "Next" is clicked on success
   ══════════════════════════════════════ -->
   <section id="screen-video2" class="screen">
-    <video id="vid2" class="fullscreen-video" playsinline muted loop>
-      <source src="video2.mp4" type="video/mp4" />
-    </video>
-    <div class="video-overlay">
-      <p class="video-caption" data-anim="fadeUp" style="--delay:0.4s">this is for you 💗</p>
+    <p class="video-caption" data-anim="fadeUp" style="--delay:0.2s">this is for you 💗</p>
+    <div class="video-card">
+      <video id="vid2" playsinline loop>
+        <source src="video2.mp4" type="video/mp4" />
+      </video>
     </div>
   </section>
 
