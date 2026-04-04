@@ -168,17 +168,42 @@ introScreen.addEventListener('keydown', e => {
 }, { once: true });
 
 /* ══════════════════════════════════════════════════════════
-   GIF LOADING
+   GIF PRELOAD — load all GIFs into Image cache immediately
+   so src-swap in Chrome never causes a blank/blink frame.
 ══════════════════════════════════════════════════════════ */
-function loadGif(src, fallback) {
-  gifEl.classList.remove('loaded');
+const gifCache = {};
+SCENES.forEach(scene => {
   const img = new Image();
-  img.onload = () => { gifEl.src = img.src; gifEl.classList.add('loaded'); };
-  img.onerror = () => {
-    if (fallback && img.src !== fallback) { img.src = fallback; }
-    else { gifEl.classList.add('loaded'); }
-  };
-  img.src = src;
+  img.onload = () => { gifCache[scene.gif] = img.src; };
+  img.onerror = () => { gifCache[scene.gif] = scene.fallback; };
+  img.src = scene.gif;
+});
+
+/* Crossfade: fade out → swap src → fade in.
+   Because the image is already in cache the swap is instant —
+   no blank frame, no blink. */
+function loadGif(src, fallback, sceneIndex) {
+  const GLOW_CLASSES = ['glow-scene0','glow-scene1','glow-scene2','glow-scene3','glow-scene4'];
+
+  // Remove all glow classes, add the one for this scene
+  gifEl.classList.remove(...GLOW_CLASSES);
+
+  // Fade out
+  gifEl.style.transition = 'opacity 0.18s ease, filter 0.4s ease';
+  gifEl.style.opacity = '0';
+
+  setTimeout(() => {
+    // Swap src while invisible — cached so instant
+    const cached = gifCache[src];
+    gifEl.src = cached || fallback;
+
+    // Add new glow class
+    if (sceneIndex !== undefined) gifEl.classList.add(GLOW_CLASSES[sceneIndex]);
+
+    // Fade back in
+    gifEl.style.opacity = '1';
+    gifEl.classList.add('loaded');
+  }, 200);
 }
 
 function loadScene(index) {
@@ -191,7 +216,7 @@ function loadScene(index) {
     questionEl.style.opacity    = '1';
     questionEl.style.transform  = 'translateY(0)';
   }, 200);
-  loadGif(scene.gif, scene.fallback);
+  loadGif(scene.gif, scene.fallback, index);
   buildStepDots();
 }
 
