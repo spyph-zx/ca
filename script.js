@@ -198,8 +198,16 @@ function handleNo() {
 }
 
 /* ══════════════════════════════════════════════════════════
-   VIDEO 1 "Continue" → back to card
+   VIDEO 1 — auto-advance when clip ends (plays once then continues)
+   "Continue" button remains as manual fallback
 ══════════════════════════════════════════════════════════ */
+vid1.addEventListener('ended', () => {
+  vid1.pause();
+  step = 1;
+  loadScene(step);
+  showScreen(cardScreen);
+});
+
 skipVideo1.addEventListener('click', () => {
   vid1.pause();
   step = 1;
