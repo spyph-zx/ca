@@ -6,12 +6,12 @@
   <title>For You 💗</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,600&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,600&family=Nunito:wght@300;400;600&family=Cinzel+Decorative:wght@700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- Background image — always visible -->
+  <!-- Background — always visible -->
   <div id="bgImage"></div>
   <div class="overlay-vignette"></div>
   <div class="overlay-grain"></div>
@@ -20,27 +20,24 @@
   <div id="petals-container" aria-hidden="true"></div>
   <div id="sparkles-container" aria-hidden="true"></div>
 
-  <!-- Background music -->
+  <!-- Background music (song.mp3) -->
   <audio id="bgMusic" loop>
     <source src="song.mp3" type="audio/mpeg" />
   </audio>
 
   <!-- ══════════════════════════════════════
-       SCREEN 1 — INTRO  (tap to begin)
+       SCREEN 1 — INTRO
   ══════════════════════════════════════ -->
   <section id="screen-intro" class="screen active" role="button" tabindex="0" aria-label="Tap to open">
     <p class="eyebrow" data-anim="fadeUp" style="--delay:0.2s">a message, just for you</p>
-
     <div class="intro-orb" data-anim="scaleIn" style="--delay:0.5s">
       <div class="orb-ring orb-ring--outer"></div>
       <div class="orb-ring orb-ring--inner"></div>
       <span class="orb-heart" aria-hidden="true">💗</span>
     </div>
-
     <h1 class="intro-title" data-anim="fadeUp" style="--delay:0.8s">
       Something I've been<br /><em>longing</em> to tell you…
     </h1>
-
     <p class="tap-hint" data-anim="fadeUp" style="--delay:1.3s">
       <span class="tap-dot"></span> tap to reveal
     </p>
@@ -48,7 +45,6 @@
 
   <!-- ══════════════════════════════════════
        SCREEN 2 — QUESTION CARD
-       GIF shown without any box/window
   ══════════════════════════════════════ -->
   <section id="screen-card" class="screen" aria-live="polite">
     <img id="gif" src="" alt="" />
@@ -68,12 +64,18 @@
 
   <!-- ══════════════════════════════════════
        SCREEN 3 — VIDEO 1
-       Autoplays when first "No" is clicked
+       First "No" click — song.mp3 still plays
   ══════════════════════════════════════ -->
   <section id="screen-video1" class="screen">
     <p class="video-caption" data-anim="fadeUp" style="--delay:0.2s">watch this… 🎬</p>
-    <div class="video-card">
-      <video id="vid1" playsinline muted loop>
+    <div class="video-frame">
+      <!-- Corner decorations -->
+      <span class="vf-corner vf-tl"></span>
+      <span class="vf-corner vf-tr"></span>
+      <span class="vf-corner vf-bl"></span>
+      <span class="vf-corner vf-br"></span>
+      <!-- Video — muted so bg music continues -->
+      <video id="vid1" playsinline muted>
         <source src="video.mp4" type="video/mp4" />
       </video>
     </div>
@@ -84,12 +86,11 @@
 
   <!-- ══════════════════════════════════════
        SCREEN 4 — SUCCESS
-       Shows after Yes is pressed
   ══════════════════════════════════════ -->
   <section id="screen-success" class="screen" aria-live="assertive">
     <div class="success-burst" id="successBurst" aria-hidden="true"></div>
     <div class="success-content">
-      <img id="successGif" src="gif6.gif" alt="" class="success-gif" />
+      <img id="successGif" src="" alt="" class="success-gif" />
       <p class="success-emoji" data-anim="popIn" style="--delay:0.1s">💗 🌹 💗</p>
       <div class="success-divider" data-anim="scaleX" style="--delay:0.5s"></div>
       <h1 class="success-title" data-anim="fadeUp" style="--delay:0.7s">
@@ -104,17 +105,28 @@
 
   <!-- ══════════════════════════════════════
        SCREEN 5 — VIDEO 2
-       Autoplays when "Next" is clicked on success
+       song.mp3 PAUSED — video2.mp4 audio plays
   ══════════════════════════════════════ -->
   <section id="screen-video2" class="screen">
     <p class="video-caption" data-anim="fadeUp" style="--delay:0.2s">this is for you 💗</p>
-    <div class="video-card">
-      <video id="vid2" playsinline loop>
+    <div class="video-frame">
+      <span class="vf-corner vf-tl"></span>
+      <span class="vf-corner vf-tr"></span>
+      <span class="vf-corner vf-bl"></span>
+      <span class="vf-corner vf-br"></span>
+      <!-- NOT muted — video2.mp4 audio plays -->
+      <video id="vid2" playsinline>
         <source src="video2.mp4" type="video/mp4" />
       </video>
     </div>
+    <!-- Zerox button — link set in config.js -->
+    <a id="zeroxBtn" class="btn-zerox" href="#" target="_blank" rel="noopener" data-anim="fadeUp" style="--delay:0.8s">
+      <span class="zerox-glow-ring"></span>
+      <span class="zerox-label">zerox</span>
+    </a>
   </section>
 
+  <script src="config.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
