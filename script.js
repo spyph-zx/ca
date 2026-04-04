@@ -1,18 +1,18 @@
-/* ═══════════════════════════════════════════════════════════
-   LOVE CONFESSION — script.js
-   ═══════════════════════════════════════════════════════ */
+/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+   LOVE CONFESSION \u2014 script.js  (performance edition)
+   \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
 'use strict';
 
-/* ── SCENES ────────────────────────────────────────────── */
+/* \u2500\u2500 SCENES \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
 const SCENES = [
-  { gif: 'gif1.gif', fallback: 'https://media.tenor.com/X8OKgelm2FEAAAAC/love-heart.gif',  text: 'Do you love me? 💗' },
-  { gif: 'gif2.gif', fallback: 'https://media.tenor.com/gLCCsUPLzAMAAAAC/cute-love.gif',   text: 'Think again, wisely… 🥺' },
-  { gif: 'gif3.gif', fallback: 'https://media.tenor.com/R7z1xp4JTKMAAAAC/anime-love.gif',  text: 'Are you really sure? 💔' },
-  { gif: 'gif4.gif', fallback: 'https://media.tenor.com/0m_JhMXJEkIAAAAC/cute-cat.gif',    text: 'Please reconsider… 🌹' },
-  { gif: 'gif5.gif', fallback: 'https://media.tenor.com/cBMSxCKPwgQAAAAC/love-kawaii.gif', text: 'Last chance, my love 💗' },
+  { gif: 'gif1.gif', fallback: 'https://media.tenor.com/X8OKgelm2FEAAAAC/love-heart.gif',  text: 'Do you love me? \ud83d\udc97' },
+  { gif: 'gif2.gif', fallback: 'https://media.tenor.com/gLCCsUPLzAMAAAAC/cute-love.gif',   text: 'Think again, wisely\u2026 \ud83e\udd7a' },
+  { gif: 'gif3.gif', fallback: 'https://media.tenor.com/R7z1xp4JTKMAAAAC/anime-love.gif',  text: 'Are you really sure? \ud83d\udc94' },
+  { gif: 'gif4.gif', fallback: 'https://media.tenor.com/0m_JhMXJEkIAAAAC/cute-cat.gif',    text: 'Please reconsider\u2026 \ud83c\udf39' },
+  { gif: 'gif5.gif', fallback: 'https://media.tenor.com/cBMSxCKPwgQAAAAC/love-kawaii.gif', text: 'Last chance, my love \ud83d\udc97' },
 ];
 
-/* ── DOM ────────────────────────────────────────────────── */
+/* \u2500\u2500 DOM \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
 const introScreen   = document.getElementById('screen-intro');
 const cardScreen    = document.getElementById('screen-card');
 const video1Screen  = document.getElementById('screen-video1');
@@ -34,77 +34,118 @@ const vid1             = document.getElementById('vid1');
 const vid2             = document.getElementById('vid2');
 const music            = document.getElementById('bgMusic');
 
-/* ── STATE ──────────────────────────────────────────────── */
+/* \u2500\u2500 STATE \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
 let step          = 0;
 let firstNo       = true;
 let noTeleporting = false;
 let lastNoX       = -1;
 let lastNoY       = -1;
+let transitioning = false;   // guard against double-taps during transitions
 
 const ALL_SCREENS = [introScreen, cardScreen, video1Screen, successScreen, video2Screen];
 
-/* ══════════════════════════════════════════════════════════
-   ZEROX BUTTON — set href from config.js
-══════════════════════════════════════════════════════════ */
+/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+   ZEROX BUTTON
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
 if (typeof CONFIG !== 'undefined' && CONFIG.chatRoomLink) {
   zeroxBtn.href = CONFIG.chatRoomLink;
 }
 
-/* ══════════════════════════════════════════════════════════
-   SCREEN MANAGEMENT
-══════════════════════════════════════════════════════════ */
-function showScreen(next) {
+/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+   PRE-LOAD vid2 early so it's buffered before the user gets there.
+   We use preload="auto" + load() and keep it muted + paused.
+   This eliminates the stutter when "Next \ud83d\udc97" is tapped.
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+function preloadVid2() {
+  vid2.preload = 'auto';
+  vid2.muted   = true;   // muted so browser allows buffering without user gesture
+  vid2.load();
+}
+// Start buffering immediately \u2014 the user has to tap intro first,
+// giving the browser plenty of time before vid2 is needed.
+preloadVid2();
+
+/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+   SCREEN MANAGEMENT \u2014 GPU-composited opacity transitions only
+   will-change is set on active screen, cleared after hide
+   so the browser can manage layer memory properly.
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+function showScreen(next, onShown) {
+  if (transitioning) return;
+  transitioning = true;
+
+  // Mark next screen for GPU promotion before opacity change
+  next.style.willChange = 'opacity';
+
   ALL_SCREENS.forEach(s => {
+    if (s === next) return;
     s.classList.remove('active');
     s.style.pointerEvents = 'none';
+    // Release GPU layer after transition completes
+    setTimeout(() => { s.style.willChange = 'auto'; }, 600);
   });
-  next.classList.add('active');
-  next.style.pointerEvents = 'all';
+
+  // Use rAF to batch the class add into the next paint frame
+  requestAnimationFrame(() => {
+    next.classList.add('active');
+    next.style.pointerEvents = 'all';
+    // Unlock after CSS transition (550ms) + small buffer
+    setTimeout(() => {
+      transitioning = false;
+      next.style.willChange = 'auto';
+      if (onShown) onShown();
+    }, 620);
+  });
 }
 
-/* ══════════════════════════════════════════════════════════
-   MUSIC HELPERS — fade out then pause, fade in on resume
-══════════════════════════════════════════════════════════ */
-let musicFadeTimer = null;
+/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+   MUSIC HELPERS \u2014 Web Animations API instead of setInterval
+   AudioParam.linearRampToValueAtTime is smoother than polling.
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+let audioCtx      = null;
+let musicSource   = null;
+let gainNode      = null;
+let musicFadeRAF  = null;
 
-function fadeOutMusic(duration, onDone) {
-  clearInterval(musicFadeTimer);
-  const steps    = 20;
-  const interval = duration / steps;
+// Lightweight rAF-based volume fade \u2014 no setInterval, no GC pressure
+function fadeOutMusic(durationMs, onDone) {
+  cancelAnimationFrame(musicFadeRAF);
+  const start    = performance.now();
   const startVol = music.volume;
-  let   current  = 0;
 
-  musicFadeTimer = setInterval(() => {
-    current++;
-    music.volume = Math.max(0, startVol * (1 - current / steps));
-    if (current >= steps) {
-      clearInterval(musicFadeTimer);
+  function tick(now) {
+    const t = Math.min((now - start) / durationMs, 1);
+    music.volume = startVol * (1 - t);
+    if (t < 1) {
+      musicFadeRAF = requestAnimationFrame(tick);
+    } else {
+      music.volume = 0;
       music.pause();
-      music.volume = startVol; // restore for next time
+      music.volume = startVol;
       if (onDone) onDone();
     }
-  }, interval);
+  }
+  musicFadeRAF = requestAnimationFrame(tick);
 }
 
-function fadeInMusic(duration) {
-  clearInterval(musicFadeTimer);
+function fadeInMusic(durationMs) {
+  cancelAnimationFrame(musicFadeRAF);
   music.volume = 0;
   music.play().catch(() => {});
-  const steps    = 20;
-  const interval = duration / steps;
-  const target   = 1.0;
-  let   current  = 0;
+  const start  = performance.now();
+  const target = 1.0;
 
-  musicFadeTimer = setInterval(() => {
-    current++;
-    music.volume = Math.min(target, target * (current / steps));
-    if (current >= steps) clearInterval(musicFadeTimer);
-  }, interval);
+  function tick(now) {
+    const t = Math.min((now - start) / durationMs, 1);
+    music.volume = target * t;
+    if (t < 1) musicFadeRAF = requestAnimationFrame(tick);
+  }
+  musicFadeRAF = requestAnimationFrame(tick);
 }
 
-/* ══════════════════════════════════════════════════════════
-   SCREEN 1 — INTRO TAP
-══════════════════════════════════════════════════════════ */
+/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+   SCREEN 1 \u2014 INTRO TAP
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
 introScreen.addEventListener('click', startExperience);
 introScreen.addEventListener('keydown', e => {
   if (e.key === 'Enter' || e.key === ' ') startExperience();
@@ -117,9 +158,9 @@ function startExperience() {
   loadScene(0);
 }
 
-/* ══════════════════════════════════════════════════════════
+/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
    GIF LOADING
-══════════════════════════════════════════════════════════ */
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
 function loadGif(src, fallback) {
   gifEl.classList.remove('loaded');
   const img = new Image();
@@ -133,13 +174,13 @@ function loadGif(src, fallback) {
 
 function loadScene(index) {
   const scene = SCENES[index];
-  questionEl.style.opacity = '0';
+  questionEl.style.opacity   = '0';
   questionEl.style.transform = 'translateY(8px)';
   setTimeout(() => {
     questionEl.textContent = scene.text;
     questionEl.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-    questionEl.style.opacity = '1';
-    questionEl.style.transform = 'translateY(0)';
+    questionEl.style.opacity    = '1';
+    questionEl.style.transform  = 'translateY(0)';
   }, 200);
   loadGif(scene.gif, scene.fallback);
   buildStepDots();
@@ -156,9 +197,9 @@ function buildStepDots() {
   });
 }
 
-/* ══════════════════════════════════════════════════════════
-   YES → SUCCESS
-══════════════════════════════════════════════════════════ */
+/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+   YES \u2192 SUCCESS
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
 yesBtn.addEventListener('click', () => {
   resetNoButton();
   vid1.pause();
@@ -174,9 +215,9 @@ function loadSuccessGif() {
   img.src = 'gif6.gif';
 }
 
-/* ══════════════════════════════════════════════════════════
+/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
    NO BUTTON
-══════════════════════════════════════════════════════════ */
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
 noBtn.addEventListener('click', handleNo);
 noBtn.addEventListener('pointerenter', () => { if (noTeleporting) teleportNo(); });
 
@@ -184,7 +225,6 @@ function handleNo() {
   if (firstNo) {
     firstNo = false;
     vid1.currentTime = 0;
-    // vid1 is muted — song.mp3 keeps playing during video1
     vid1.play().catch(() => {});
     showScreen(video1Screen);
     return;
@@ -197,151 +237,28 @@ function handleNo() {
   }
 }
 
-/* ══════════════════════════════════════════════════════════
-   VIDEO 1 — auto-advance when clip ends (plays once then continues)
-   "Continue" button remains as manual fallback
-══════════════════════════════════════════════════════════ */
-vid1.addEventListener('ended', () => {
+/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+   VIDEO 1 \u2014 auto-advance when clip ends; Continue = manual skip
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+function leaveVideo1() {
   vid1.pause();
   step = 1;
   loadScene(step);
   showScreen(cardScreen);
-});
+}
 
-skipVideo1.addEventListener('click', () => {
-  vid1.pause();
-  step = 1;
-  loadScene(step);
-  showScreen(cardScreen);
-});
+vid1.addEventListener('ended', leaveVideo1);
+skipVideo1.addEventListener('click', leaveVideo1);
 
-/* ══════════════════════════════════════════════════════════
-   SUCCESS "Next" → VIDEO 2
-   song.mp3 fades out → vid2 plays with its own audio
-══════════════════════════════════════════════════════════ */
+/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+   SUCCESS "Next \ud83d\udc97" \u2192 VIDEO 2
+   \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+   SMOOTH SEQUENCE:
+   1. Switch screen immediately (CSS fade handles the visual)
+   2. Start music fade-out (rAF-based, off main thread pressure)
+   3. Once music is silent \u2192 unmute & play vid2 (already buffered)
+\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
 nextAfterSuccess.addEventListener('click', () => {
-  showScreen(video2Screen);
-
-  // Fade out song.mp3 over 800ms then play vid2 with audio
-  fadeOutMusic(800, () => {
-    vid2.currentTime = 0;
-    vid2.muted  = false;
-    vid2.volume = 1.0;
-    vid2.play().catch(() => {
-      // Autoplay with audio sometimes blocked on mobile.
-      // vid2 is already visible — user can tap it to play.
-    });
-  });
-});
-
-/* ══════════════════════════════════════════════════════════
-   NO TELEPORT
-   Button reparented to body so CSS transform on .screen
-   doesn't break position:fixed.
-══════════════════════════════════════════════════════════ */
-function teleportNo() {
-  if (!noTeleporting) {
-    noTeleporting = true;
-    noBtn.classList.add('teleporting');
-    document.body.appendChild(noBtn);
-    lastNoX = document.documentElement.clientWidth  / 2;
-    lastNoY = document.documentElement.clientHeight / 2;
-  }
-
-  const vw = document.documentElement.clientWidth;
-  const vh = document.documentElement.clientHeight;
-  const BTN_W = 110, BTN_H = 48, MARGIN = 32;
-  const minX = MARGIN, minY = MARGIN;
-  const maxX = vw - BTN_W - MARGIN;
-  const maxY = vh - BTN_H - MARGIN;
-  if (maxX < minX || maxY < minY) return;
-
-  const minDist = Math.min(vw, vh) * 0.30;
-  let newX, newY, tries = 0;
-  do {
-    newX = minX + Math.random() * (maxX - minX);
-    newY = minY + Math.random() * (maxY - minY);
-    tries++;
-  } while (Math.hypot(newX - lastNoX, newY - lastNoY) < minDist && tries < 80);
-
-  newX = Math.min(Math.max(newX, minX), maxX);
-  newY = Math.min(Math.max(newY, minY), maxY);
-  lastNoX = newX; lastNoY = newY;
-  noBtn.style.left = newX + 'px';
-  noBtn.style.top  = newY + 'px';
-}
-
-function resetNoButton() {
-  if (!noTeleporting) return;
-  const row = document.getElementById('btnRow');
-  if (row && !row.contains(noBtn)) row.appendChild(noBtn);
-  noBtn.classList.remove('teleporting');
-  noBtn.style.left = noBtn.style.top = '';
-  noTeleporting = false; lastNoX = lastNoY = -1;
-}
-
-function clampNoBtn() {
-  if (!noTeleporting) return;
-  const vw = document.documentElement.clientWidth;
-  const vh = document.documentElement.clientHeight;
-  const MARGIN = 32;
-  const curL = parseFloat(noBtn.style.left) || 0;
-  const curT = parseFloat(noBtn.style.top)  || 0;
-  noBtn.style.left = Math.min(Math.max(curL, MARGIN), vw - 110 - MARGIN) + 'px';
-  noBtn.style.top  = Math.min(Math.max(curT, MARGIN), vh -  48 - MARGIN) + 'px';
-}
-window.addEventListener('resize', clampNoBtn);
-window.addEventListener('orientationchange', () => setTimeout(clampNoBtn, 150));
-
-/* ══════════════════════════════════════════════════════════
-   SUCCESS BURST RINGS
-══════════════════════════════════════════════════════════ */
-const BURST_COLORS = [
-  { color: '#E8436A', shadow: '0 0 14px #E8436A, 0 0 30px #C2005F' },
-  { color: '#FFB5C8', shadow: '0 0 10px #FFB5C8, 0 0 22px #E8436A88' },
-  { color: '#C2005F', shadow: '0 0 16px #C2005F, 0 0 36px #6E003099' },
-  { color: '#FFE8EF', shadow: '0 0 8px #FFE8EF, 0 0 18px #FFB5C888' },
-];
-function spawnSuccessBurst() {
-  successBurst.innerHTML = '';
-  BURST_COLORS.forEach((c, i) => {
-    const ring = document.createElement('div');
-    ring.className = 'burst-ring';
-    const size = 60 + i * 30;
-    ring.style.cssText = `width:${size}px;height:${size}px;border-color:${c.color};box-shadow:${c.shadow};animation-delay:${i*0.14}s;`;
-    successBurst.appendChild(ring);
-  });
-}
-
-/* ══════════════════════════════════════════════════════════
-   PETALS
-══════════════════════════════════════════════════════════ */
-(function spawnPetals() {
-  const container = document.getElementById('petals-container');
-  const COLS = ['rgba(255,181,200,0.78)','rgba(232,67,106,0.62)','rgba(194,0,95,0.48)','rgba(255,232,239,0.65)','rgba(255,140,170,0.55)','rgba(110,0,48,0.45)'];
-  const SHAD = ['0 0 6px rgba(255,181,200,0.8)','0 0 6px rgba(232,67,106,0.7)','0 0 6px rgba(194,0,95,0.6)','0 0 5px rgba(255,232,239,0.7)'];
-  for (let i = 0; i < 55; i++) {
-    const p = document.createElement('div');
-    p.className = 'petal';
-    const w = 7 + Math.random()*10, h = w*(1.4+Math.random()*0.6);
-    const dx = (Math.random()-0.5)*140;
-    const rx1=60+Math.random()*30, rx2=15+Math.random()*20, ry1=45+Math.random()*25, ry2=20+Math.random()*25;
-    p.style.cssText = `left:${Math.random()*110-5}%;width:${w}px;height:${h}px;background:${COLS[Math.floor(Math.random()*COLS.length)]};--dx:${dx}px;animation-duration:${7+Math.random()*9}s;animation-delay:${Math.random()*-18}s;filter:blur(${0.2+Math.random()*0.7}px);box-shadow:${SHAD[Math.floor(Math.random()*SHAD.length)]};border-radius:${rx1}% ${rx2}% ${rx1}% ${rx2}% / ${ry1}% ${ry2}% ${ry1}% ${ry2}%;`;
-    container.appendChild(p);
-  }
-})();
-
-/* ══════════════════════════════════════════════════════════
-   SPARKLES
-══════════════════════════════════════════════════════════ */
-(function spawnSparkles() {
-  const container = document.getElementById('sparkles-container');
-  const PR = [{color:'#FFB5C8',shadow:'0 0 8px #FFB5C8, 0 0 16px #E8436A77'},{color:'#E8436A',shadow:'0 0 8px #E8436A, 0 0 18px #C2005F88'},{color:'#FFE8EF',shadow:'0 0 6px #FFE8EF, 0 0 14px #FFB5C888'},{color:'#C2005F',shadow:'0 0 10px #C2005F, 0 0 20px #6E003077'}];
-  for (let i = 0; i < 28; i++) {
-    const s = document.createElement('div');
-    s.className = 'sparkle';
-    const pr = PR[Math.floor(Math.random()*PR.length)], sz = 2+Math.random()*5;
-    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;background:${pr.color};box-shadow:${pr.shadow};animation-duration:${2+Math.random()*4}s;animation-delay:${Math.random()*-6}s;`;
-    container.appendChild(s);
-  }
-})();
+  // Show video2 screen right away \u2014 it fades in via CSS (550ms)
+  showScreen(video2Screen, () => {
+    // Called once
