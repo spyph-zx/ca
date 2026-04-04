@@ -97,6 +97,11 @@ body { font-family: var(--font-sans); background: var(--dusk); color: var(--cham
   gap: clamp(14px, 3.5vh, 24px);
   opacity: 0; pointer-events: none;
   transition: opacity 0.55s var(--ease-smooth);
+  /* GPU-composited layer — prevents layout repaints during transitions */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 .screen.active { opacity: 1; pointer-events: all; }
 
@@ -355,11 +360,15 @@ body { font-family: var(--font-sans); background: var(--dusk); color: var(--cham
 .video-frame video {
   display: block;
   width: 100%;
-  height: auto;               /* height follows video's natural aspect ratio */
-  max-height: 52vh;           /* never taller than 52% of screen */
-  object-fit: contain;        /* FULL clip visible — no cropping ever */
+  height: auto;
+  max-height: 52vh;
+  object-fit: contain;
   border-radius: 15px;
   position: relative; z-index: 1;
+  /* GPU decode hint — prevents jank on first frame */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform;
 }
 
 .video-caption {
