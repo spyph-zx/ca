@@ -11,17 +11,23 @@
 </head>
 <body>
 
+  <!-- Background — always visible -->
   <div id="bgImage"></div>
   <div class="overlay-vignette"></div>
   <div class="overlay-grain"></div>
 
+  <!-- Petals + sparkles -->
   <div id="petals-container" aria-hidden="true"></div>
   <div id="sparkles-container" aria-hidden="true"></div>
 
+  <!-- Background music (song.mp3) -->
   <audio id="bgMusic" loop>
     <source src="song.mp3" type="audio/mpeg" />
   </audio>
 
+  <!-- ══════════════════════════════════════
+       SCREEN 1 — INTRO
+  ══════════════════════════════════════ -->
   <section id="screen-intro" class="screen active" role="button" tabindex="0" aria-label="Tap to open">
     <p class="eyebrow" data-anim="fadeUp" style="--delay:0.2s">a message, just for you</p>
     <div class="intro-orb" data-anim="scaleIn" style="--delay:0.5s">
@@ -37,18 +43,9 @@
     </p>
   </section>
 
-  <section id="screen-pre-vids" class="screen">
-    <div class="anim-wrapper" id="pre-vid-anim">
-      <div class="video-frame">
-        <span class="vf-corner vf-tl"></span>
-        <span class="vf-corner vf-tr"></span>
-        <span class="vf-corner vf-bl"></span>
-        <span class="vf-corner vf-br"></span>
-        <video id="vid-pre" playsinline></video>
-      </div>
-    </div>
-  </section>
-
+  <!-- ══════════════════════════════════════
+       SCREEN 2 — QUESTION CARD
+  ══════════════════════════════════════ -->
   <section id="screen-card" class="screen" aria-live="polite">
     <img id="gif" src="" alt="" />
     <h2 id="question" class="question-text"></h2>
@@ -65,13 +62,19 @@
     </div>
   </section>
 
+  <!-- ══════════════════════════════════════
+       SCREEN 3 — VIDEO 1
+       First "No" click — song.mp3 still plays
+  ══════════════════════════════════════ -->
   <section id="screen-video1" class="screen">
     <p class="video-caption" data-anim="fadeUp" style="--delay:0.2s">watch this… 🎬</p>
     <div class="video-frame">
+      <!-- Corner decorations -->
       <span class="vf-corner vf-tl"></span>
       <span class="vf-corner vf-tr"></span>
       <span class="vf-corner vf-bl"></span>
       <span class="vf-corner vf-br"></span>
+      <!-- Video — muted so bg music continues -->
       <video id="vid1" playsinline muted preload="auto">
         <source src="video.mp4" type="video/mp4" />
       </video>
@@ -81,6 +84,9 @@
     </button>
   </section>
 
+  <!-- ══════════════════════════════════════
+       SCREEN 4 — SUCCESS
+  ══════════════════════════════════════ -->
   <section id="screen-success" class="screen" aria-live="assertive">
     <div class="success-burst" id="successBurst" aria-hidden="true"></div>
     <div class="success-content">
@@ -97,6 +103,10 @@
     </div>
   </section>
 
+  <!-- ══════════════════════════════════════
+       SCREEN 5 — VIDEO 2
+       song.mp3 PAUSED — video2.mp4 audio plays
+  ══════════════════════════════════════ -->
   <section id="screen-video2" class="screen">
     <p class="video-caption" data-anim="fadeUp" style="--delay:0.2s">this is for you 💗</p>
     <div class="video-frame">
@@ -104,26 +114,16 @@
       <span class="vf-corner vf-tr"></span>
       <span class="vf-corner vf-bl"></span>
       <span class="vf-corner vf-br"></span>
+      <!-- NOT muted — video2.mp4 audio plays; preload + loop set by script -->
       <video id="vid2" playsinline loop>
         <source src="video2.mp4" type="video/mp4" />
       </video>
     </div>
-    <a id="zeroxBtn" class="btn-zerox" href="#" data-anim="fadeUp" style="--delay:0.8s">
+    <!-- Zerox button — link set in config.js -->
+    <a id="zeroxBtn" class="btn-zerox" href="#" target="_blank" rel="noopener" data-anim="fadeUp" style="--delay:0.8s">
       <span class="zerox-glow-ring"></span>
       <span class="zerox-label">zerox</span>
     </a>
-  </section>
-
-  <section id="screen-post-vids" class="screen">
-    <div class="anim-wrapper" id="post-vid-anim">
-      <div class="video-frame">
-        <span class="vf-corner vf-tl"></span>
-        <span class="vf-corner vf-tr"></span>
-        <span class="vf-corner vf-bl"></span>
-        <span class="vf-corner vf-br"></span>
-        <video id="vid-post" playsinline></video>
-      </div>
-    </div>
   </section>
 
   <script src="config.js"></script>
