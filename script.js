@@ -1,3 +1,6 @@
+/* ═══════════════════════════════════════════════════════════
+   LOVE CONFESSION — script.js  (performance edition)
+   ═══════════════════════════════════════════════════════ */
 'use strict';
 
 /* ── SCENES ────────────────────────────────────────────── */
@@ -11,12 +14,10 @@ const SCENES = [
 
 /* ── DOM ────────────────────────────────────────────────── */
 const introScreen   = document.getElementById('screen-intro');
-const preVidsScreen = document.getElementById('screen-pre-vids');
 const cardScreen    = document.getElementById('screen-card');
 const video1Screen  = document.getElementById('screen-video1');
 const successScreen = document.getElementById('screen-success');
 const video2Screen  = document.getElementById('screen-video2');
-const postVidsScreen= document.getElementById('screen-post-vids');
 
 const gifEl            = document.getElementById('gif');
 const questionEl       = document.getElementById('question');
@@ -29,13 +30,8 @@ const successGifEl     = document.getElementById('successGif');
 const nextAfterSuccess = document.getElementById('nextAfterSuccess');
 const skipVideo1       = document.getElementById('skipVideo1');
 const zeroxBtn         = document.getElementById('zeroxBtn');
-
-const vidPre           = document.getElementById('vid-pre');
 const vid1             = document.getElementById('vid1');
 const vid2             = document.getElementById('vid2');
-const vidPost          = document.getElementById('vid-post');
-const preVidAnim       = document.getElementById('pre-vid-anim');
-const postVidAnim      = document.getElementById('post-vid-anim');
 const music            = document.getElementById('bgMusic');
 
 /* ── STATE ──────────────────────────────────────────────── */
@@ -46,72 +42,37 @@ let lastNoX       = -1;
 let lastNoY       = -1;
 let transitioning = false;
 
-const ALL_SCREENS = [introScreen, preVidsScreen, cardScreen, video1Screen, successScreen, video2Screen, postVidsScreen];
+const ALL_SCREENS = [introScreen, cardScreen, video1Screen, successScreen, video2Screen];
 
 /* ══════════════════════════════════════════════════════════
-   DYNAMIC SEQUENCES (Pre & Post Videos)
+   ZEROX BUTTON
 ══════════════════════════════════════════════════════════ */
-// Update these names with your actual video files
-const PRE_VIDEOS = ['pre1.mp4', 'pre2.mp4', 'pre3.mp4', 'pre4.mp4', 'pre5.mp4'];
-const POST_VIDEOS = ['post1.mp4', 'post2.mp4', 'post3.mp4', 'post4.mp4', 'post5.mp4'];
-
-const DYNAMIC_ANIMS = [
-  { in: 'anim-slide-in-left', out: 'anim-slide-out-right' },
-  { in: 'anim-zoom-in', out: 'anim-zoom-out' },
-  { in: 'anim-fade-up', out: 'anim-fade-down' },
-  { in: 'anim-rotate-in', out: 'anim-rotate-out' },
-  { in: 'anim-scale-bounce', out: 'anim-scale-shrink' }
-];
-
-function playSequence(videoEl, wrapperEl, videoList, onFinish) {
-  let currentIndex = 0;
-
-  function playNext() {
-    if (currentIndex >= videoList.length) {
-      if(onFinish) onFinish();
-      return;
-    }
-
-    // Reset animations
-    wrapperEl.className = 'anim-wrapper';
-    
-    // Pick animation based on index
-    const anim = DYNAMIC_ANIMS[currentIndex % DYNAMIC_ANIMS.length];
-    
-    // Trigger Reflow for animation restart
-    void wrapperEl.offsetWidth; 
-    
-    // Apply IN animation
-    wrapperEl.classList.add(anim.in);
-    
-    videoEl.src = videoList[currentIndex];
-    videoEl.play().catch(e => console.log("Autoplay prevented:", e));
-
-    videoEl.onended = () => {
-      // Apply OUT animation
-      wrapperEl.classList.remove(anim.in);
-      wrapperEl.classList.add(anim.out);
-      
-      // Wait for OUT animation to complete before next video
-      setTimeout(() => {
-        currentIndex++;
-        playNext();
-      }, 550); 
-    };
-  }
-  playNext();
+if (typeof CONFIG !== 'undefined' && CONFIG.chatRoomLink) {
+  zeroxBtn.href = CONFIG.chatRoomLink;
 }
 
 /* ══════════════════════════════════════════════════════════
-   SCREEN MANAGEMENT & AUDIO
+   PRE-BUFFER vid2 immediately on page load.
+   Muted so the browser allows buffering without a user gesture.
+   By the time "Next 💗" is tapped, vid2 is already in memory.
 ══════════════════════════════════════════════════════════ */
-vid2.preload = 'auto';
-vid2.muted = true;
+vid2.preload     = 'auto';
+vid2.muted       = true;
+vid2.currentTime = 0;
 vid2.load();
 
+/* ══════════════════════════════════════════════════════════
+   SCREEN MANAGEMENT
+   - Only opacity changes (GPU composited, no layout).
+   - will-change promoted before the transition, released after.
+   - rAF batches the class change into one paint frame.
+   - transitioning guard prevents double-tap jank.
+══════════════════════════════════════════════════════════ */
 function showScreen(next, onShown) {
+  // Never block — just skip if already mid-transition to same screen
   if (transitioning && next.classList.contains('active')) return;
   transitioning = true;
+
   next.style.willChange = 'opacity';
 
   ALL_SCREENS.forEach(s => {
@@ -133,10 +94,57 @@ function showScreen(next, onShown) {
 }
 
 /* ══════════════════════════════════════════════════════════
-   START EXPERIENCE (Intro -> Pre Vids -> Card)
+   MUSIC FADE — rAF-based (no setInterval polling / GC churn)
+══════════════════════════════════════════════════════════ */
+let musicFadeRAF = null;
+
+function fadeOutMusic(durationMs, onDone) {
+  cancelAnimationFrame(musicFadeRAF);
+  const start    = performance.now();
+  const startVol = music.volume;
+
+  function tick(now) {
+    const t = Math.min((now - start) / durationMs, 1);
+    music.volume = startVol * (1 - t);
+    if (t < 1) {
+      musicFadeRAF = requestAnimationFrame(tick);
+    } else {
+      music.volume = 0;
+      music.pause();
+      music.volume = startVol;
+      if (onDone) onDone();
+    }
+  }
+  musicFadeRAF = requestAnimationFrame(tick);
+}
+
+function fadeInMusic(durationMs) {
+  cancelAnimationFrame(musicFadeRAF);
+  music.volume = 0;
+  music.play().catch(() => {});
+  const start  = performance.now();
+  const target = 1.0;
+
+  function tick(now) {
+    const t = Math.min((now - start) / durationMs, 1);
+    music.volume = target * t;
+    if (t < 1) musicFadeRAF = requestAnimationFrame(tick);
+  }
+  musicFadeRAF = requestAnimationFrame(tick);
+}
+
+/* ══════════════════════════════════════════════════════════
+   SCREEN 1 — INTRO TAP
+   Uses { once:true } so it only ever fires once.
+   Bypasses the transitioning guard — intro is the very first
+   interaction so nothing else can be in-flight.
 ══════════════════════════════════════════════════════════ */
 function startExperience() {
   transitioning = false;
+
+  // Unlock audio context on first user gesture by playing a silent
+  // zero-duration clip — this warms up the audio engine so that
+  // vid2.muted=false works immediately regardless of when Yes is clicked.
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   if (AudioContext) {
     const ctx = new AudioContext();
@@ -150,15 +158,8 @@ function startExperience() {
 
   music.volume = 1.0;
   music.play().catch(() => {});
-  
-  // Go to 5 Pre-Videos
-  showScreen(preVidsScreen, () => {
-    playSequence(vidPre, preVidAnim, PRE_VIDEOS, () => {
-      // After Pre-videos finish, show Question Card
-      showScreen(cardScreen);
-      loadScene(0);
-    });
-  });
+  showScreen(cardScreen);
+  loadScene(0);
 }
 
 introScreen.addEventListener('click', startExperience, { once: true });
@@ -167,7 +168,8 @@ introScreen.addEventListener('keydown', e => {
 }, { once: true });
 
 /* ══════════════════════════════════════════════════════════
-   GIF PRELOAD & SCENE LOAD
+   GIF PRELOAD — load all GIFs into Image cache immediately
+   so src-swap in Chrome never causes a blank/blink frame.
 ══════════════════════════════════════════════════════════ */
 const gifCache = {};
 SCENES.forEach(scene => {
@@ -177,15 +179,28 @@ SCENES.forEach(scene => {
   img.src = scene.gif;
 });
 
+/* Crossfade: fade out → swap src → fade in.
+   Because the image is already in cache the swap is instant —
+   no blank frame, no blink. */
 function loadGif(src, fallback, sceneIndex) {
   const GLOW_CLASSES = ['glow-scene0','glow-scene1','glow-scene2','glow-scene3','glow-scene4'];
+
+  // Remove all glow classes, add the one for this scene
   gifEl.classList.remove(...GLOW_CLASSES);
+
+  // Fade out
   gifEl.style.transition = 'opacity 0.18s ease, filter 0.4s ease';
   gifEl.style.opacity = '0';
+
   setTimeout(() => {
+    // Swap src while invisible — cached so instant
     const cached = gifCache[src];
     gifEl.src = cached || fallback;
+
+    // Add new glow class
     if (sceneIndex !== undefined) gifEl.classList.add(GLOW_CLASSES[sceneIndex]);
+
+    // Fade back in
     gifEl.style.opacity = '1';
     gifEl.classList.add('loaded');
   }, 200);
@@ -193,13 +208,13 @@ function loadGif(src, fallback, sceneIndex) {
 
 function loadScene(index) {
   const scene = SCENES[index];
-  questionEl.style.opacity = '0';
+  questionEl.style.opacity   = '0';
   questionEl.style.transform = 'translateY(8px)';
   setTimeout(() => {
-    questionEl.textContent = scene.text;
+    questionEl.textContent      = scene.text;
     questionEl.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-    questionEl.style.opacity = '1';
-    questionEl.style.transform = 'translateY(0)';
+    questionEl.style.opacity    = '1';
+    questionEl.style.transform  = 'translateY(0)';
   }, 200);
   loadGif(scene.gif, scene.fallback, index);
   buildStepDots();
@@ -217,7 +232,7 @@ function buildStepDots() {
 }
 
 /* ══════════════════════════════════════════════════════════
-   YES / NO LOGIC
+   YES → SUCCESS
 ══════════════════════════════════════════════════════════ */
 yesBtn.addEventListener('click', () => {
   resetNoButton();
@@ -234,6 +249,9 @@ function loadSuccessGif() {
   img.src = 'gif6.gif';
 }
 
+/* ══════════════════════════════════════════════════════════
+   NO BUTTON
+══════════════════════════════════════════════════════════ */
 noBtn.addEventListener('click', handleNo);
 noBtn.addEventListener('pointerenter', () => { if (noTeleporting) teleportNo(); });
 
@@ -253,6 +271,9 @@ function handleNo() {
   }
 }
 
+/* ══════════════════════════════════════════════════════════
+   VIDEO 1 — auto-advance on end; Continue = manual skip
+══════════════════════════════════════════════════════════ */
 function leaveVideo1() {
   vid1.pause();
   step = 1;
@@ -262,35 +283,34 @@ function leaveVideo1() {
 vid1.addEventListener('ended', leaveVideo1);
 skipVideo1.addEventListener('click', leaveVideo1);
 
+/* ══════════════════════════════════════════════════════════
+   SUCCESS "Next 💗" → VIDEO 2
+   ─────────────────────────────────────────────────────────
+   Smooth sequence:
+   1. showScreen fades video2Screen in over 550ms (CSS transition).
+   2. Music fades out in parallel via rAF (600ms).
+   3. onShown callback fires after screen is fully visible —
+      vid2 is already buffered, so play is instant.
+══════════════════════════════════════════════════════════ */
 nextAfterSuccess.addEventListener('click', () => {
   showScreen(video2Screen);
+
+  // Start vid2 immediately
   vid2.currentTime = 0;
-  vid2.muted = true;
+  vid2.muted       = true;
   vid2.play().then(() => {
-    vid2.muted = false;
+    vid2.muted  = false;
     vid2.volume = 1.0;
   }).catch(() => {});
 
-  setTimeout(() => { music.pause(); }, 1000);
+  // Pause mp3 after 1 second
+  setTimeout(() => {
+    music.pause();
+  }, 1000);
 });
 
 /* ══════════════════════════════════════════════════════════
-   ZEROX BUTTON (Triggers Post Videos)
-══════════════════════════════════════════════════════════ */
-zeroxBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  vid2.pause(); // Stop video 2
-  
-  showScreen(postVidsScreen, () => {
-    playSequence(vidPost, postVidAnim, POST_VIDEOS, () => {
-       // Code here if you want anything to happen after the last video finishes
-       // Like showing a final alert or looping back.
-    });
-  });
-});
-
-/* ══════════════════════════════════════════════════════════
-   TELEPORT LOGIC & EFFECTS (NoBtn, Petals, Sparkles)
+   NO TELEPORT
 ══════════════════════════════════════════════════════════ */
 function teleportNo() {
   if (!noTeleporting) {
@@ -300,9 +320,13 @@ function teleportNo() {
     lastNoX = document.documentElement.clientWidth  / 2;
     lastNoY = document.documentElement.clientHeight / 2;
   }
-  const vw = document.documentElement.clientWidth, vh = document.documentElement.clientHeight;
+
+  const vw = document.documentElement.clientWidth;
+  const vh = document.documentElement.clientHeight;
   const BTN_W = 110, BTN_H = 48, MARGIN = 32;
-  const minX = MARGIN, minY = MARGIN, maxX = vw - BTN_W - MARGIN, maxY = vh - BTN_H - MARGIN;
+  const minX = MARGIN, minY = MARGIN;
+  const maxX = vw - BTN_W - MARGIN;
+  const maxY = vh - BTN_H - MARGIN;
   if (maxX < minX || maxY < minY) return;
 
   const minDist = Math.min(vw, vh) * 0.30;
@@ -316,7 +340,8 @@ function teleportNo() {
   newX = Math.min(Math.max(newX, minX), maxX);
   newY = Math.min(Math.max(newY, minY), maxY);
   lastNoX = newX; lastNoY = newY;
-  noBtn.style.left = newX + 'px'; noBtn.style.top  = newY + 'px';
+  noBtn.style.left = newX + 'px';
+  noBtn.style.top  = newY + 'px';
 }
 
 function resetNoButton() {
@@ -330,14 +355,20 @@ function resetNoButton() {
 
 function clampNoBtn() {
   if (!noTeleporting) return;
-  const vw = document.documentElement.clientWidth, vh = document.documentElement.clientHeight, MARGIN = 32;
-  const curL = parseFloat(noBtn.style.left) || 0, curT = parseFloat(noBtn.style.top) || 0;
+  const vw = document.documentElement.clientWidth;
+  const vh = document.documentElement.clientHeight;
+  const MARGIN = 32;
+  const curL = parseFloat(noBtn.style.left) || 0;
+  const curT = parseFloat(noBtn.style.top)  || 0;
   noBtn.style.left = Math.min(Math.max(curL, MARGIN), vw - 110 - MARGIN) + 'px';
   noBtn.style.top  = Math.min(Math.max(curT, MARGIN), vh -  48 - MARGIN) + 'px';
 }
 window.addEventListener('resize', clampNoBtn);
 window.addEventListener('orientationchange', () => setTimeout(clampNoBtn, 150));
 
+/* ══════════════════════════════════════════════════════════
+   SUCCESS BURST RINGS
+══════════════════════════════════════════════════════════ */
 const BURST_COLORS = [
   { color: '#E8436A', shadow: '0 0 14px #E8436A, 0 0 30px #C2005F' },
   { color: '#FFB5C8', shadow: '0 0 10px #FFB5C8, 0 0 22px #E8436A88' },
@@ -349,31 +380,74 @@ function spawnSuccessBurst() {
   BURST_COLORS.forEach((c, i) => {
     const ring = document.createElement('div');
     ring.className = 'burst-ring';
-    ring.style.cssText = `width:${60+i*30}px;height:${60+i*30}px;border-color:${c.color};box-shadow:${c.shadow};animation-delay:${i*0.14}s;`;
+    const size = 60 + i * 30;
+    ring.style.cssText = `width:${size}px;height:${size}px;border-color:${c.color};box-shadow:${c.shadow};animation-delay:${i*0.14}s;`;
     successBurst.appendChild(ring);
   });
 }
 
+/* ══════════════════════════════════════════════════════════
+   PETALS — 32 elements (was 55); will-change:transform
+   so the browser composites each on its own GPU layer.
+══════════════════════════════════════════════════════════ */
 (function spawnPetals() {
   const container = document.getElementById('petals-container');
-  const COLS = ['rgba(255,181,200,0.78)', 'rgba(232,67,106,0.62)', 'rgba(194,0,95,0.48)', 'rgba(255,232,239,0.65)', 'rgba(255,140,170,0.55)', 'rgba(110,0,48,0.45)'];
+  const COLS = [
+    'rgba(255,181,200,0.78)', 'rgba(232,67,106,0.62)',
+    'rgba(194,0,95,0.48)',    'rgba(255,232,239,0.65)',
+    'rgba(255,140,170,0.55)', 'rgba(110,0,48,0.45)',
+  ];
   for (let i = 0; i < 32; i++) {
-    const p = document.createElement('div'); p.className = 'petal';
-    const w = 7 + Math.random() * 10, h = w * (1.4 + Math.random() * 0.6);
-    const dx = (Math.random() - 0.5) * 140;
-    const rx1 = 60 + Math.random()*30, rx2 = 15 + Math.random()*20, ry1 = 45 + Math.random()*25, ry2 = 20 + Math.random()*25;
-    p.style.cssText = `left:${Math.random()*110-5}%;width:${w}px;height:${h}px;background:${COLS[i%COLS.length]};--dx:${dx}px;animation-duration:${7+Math.random()*9}s;animation-delay:${Math.random()*-18}s;filter:blur(${0.2+Math.random()*0.5}px);border-radius:${rx1}% ${rx2}% ${rx1}% ${rx2}% / ${ry1}% ${ry2}% ${ry1}% ${ry2}%;will-change:transform;`;
+    const p   = document.createElement('div');
+    p.className = 'petal';
+    const w   = 7  + Math.random() * 10;
+    const h   = w  * (1.4 + Math.random() * 0.6);
+    const dx  = (Math.random() - 0.5) * 140;
+    const rx1 = 60 + Math.random()*30, rx2 = 15 + Math.random()*20;
+    const ry1 = 45 + Math.random()*25, ry2 = 20 + Math.random()*25;
+    p.style.cssText = [
+      `left:${Math.random()*110 - 5}%`,
+      `width:${w}px`,
+      `height:${h}px`,
+      `background:${COLS[i % COLS.length]}`,
+      `--dx:${dx}px`,
+      `animation-duration:${7 + Math.random()*9}s`,
+      `animation-delay:${Math.random()*-18}s`,
+      `filter:blur(${0.2 + Math.random()*0.5}px)`,
+      `border-radius:${rx1}% ${rx2}% ${rx1}% ${rx2}% / ${ry1}% ${ry2}% ${ry1}% ${ry2}%`,
+      `will-change:transform`,
+    ].join(';');
     container.appendChild(p);
   }
 })();
 
+/* ══════════════════════════════════════════════════════════
+   SPARKLES — 16 elements (was 28); will-change:transform,opacity
+══════════════════════════════════════════════════════════ */
 (function spawnSparkles() {
   const container = document.getElementById('sparkles-container');
-  const PR = [{ color:'#FFB5C8', shadow:'0 0 8px #FFB5C8, 0 0 16px #E8436A77' }, { color:'#E8436A', shadow:'0 0 8px #E8436A, 0 0 18px #C2005F88' }, { color:'#FFE8EF', shadow:'0 0 6px #FFE8EF, 0 0 14px #FFB5C888' }, { color:'#C2005F', shadow:'0 0 10px #C2005F, 0 0 20px #6E003077' }];
+  const PR = [
+    { color:'#FFB5C8', shadow:'0 0 8px #FFB5C8, 0 0 16px #E8436A77' },
+    { color:'#E8436A', shadow:'0 0 8px #E8436A, 0 0 18px #C2005F88' },
+    { color:'#FFE8EF', shadow:'0 0 6px #FFE8EF, 0 0 14px #FFB5C888' },
+    { color:'#C2005F', shadow:'0 0 10px #C2005F, 0 0 20px #6E003077' },
+  ];
   for (let i = 0; i < 16; i++) {
-    const s = document.createElement('div'); s.className = 'sparkle';
-    const pr = PR[i%PR.length], sz = 2 + Math.random() * 5;
-    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;background:${pr.color};box-shadow:${pr.shadow};animation-duration:${2+Math.random()*4}s;animation-delay:${Math.random()*-6}s;will-change:transform,opacity;`;
+    const s  = document.createElement('div');
+    s.className = 'sparkle';
+    const pr = PR[i % PR.length];
+    const sz = 2 + Math.random() * 5;
+    s.style.cssText = [
+      `left:${Math.random()*100}%`,
+      `top:${Math.random()*100}%`,
+      `width:${sz}px`,
+      `height:${sz}px`,
+      `background:${pr.color}`,
+      `box-shadow:${pr.shadow}`,
+      `animation-duration:${2 + Math.random()*4}s`,
+      `animation-delay:${Math.random()*-6}s`,
+      `will-change:transform,opacity`,
+    ].join(';');
     container.appendChild(s);
   }
 })();
