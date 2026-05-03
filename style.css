@@ -616,3 +616,74 @@ body { font-family: var(--font-sans); background: var(--dusk); color: var(--cham
 @media (hover: none) and (pointer: coarse) {
   .btn--yes:hover, .btn--no:hover { transform: none; }
 }
+
+/* ══════════════════════════════════════════════════════════
+   DYNAMIC VIDEO ANIMATIONS (Pre & Post Sequence)
+══════════════════════════════════════════════════════════ */
+.anim-wrapper {
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  width: 100%;
+}
+
+/* 1. Slide Left / Right */
+.anim-slide-in-left { animation: slideInLeft 0.5s ease-out forwards; }
+.anim-slide-out-right { animation: slideOutRight 0.5s ease-in forwards; }
+@keyframes slideInLeft { 
+  from { transform: translateX(-150%); opacity: 0; } 
+  to { transform: translateX(0); opacity: 1; } 
+}
+@keyframes slideOutRight { 
+  from { transform: translateX(0); opacity: 1; } 
+  to { transform: translateX(150%); opacity: 0; } 
+}
+
+/* 2. Zoom In / Out */
+.anim-zoom-in { animation: zoomInAnim 0.6s var(--ease-bounce) forwards; }
+.anim-zoom-out { animation: zoomOutAnim 0.5s ease-in forwards; }
+@keyframes zoomInAnim { 
+  from { transform: scale(0.3); opacity: 0; } 
+  to { transform: scale(1); opacity: 1; } 
+}
+@keyframes zoomOutAnim { 
+  from { transform: scale(1); opacity: 1; } 
+  to { transform: scale(1.6); opacity: 0; } 
+}
+
+/* 3. Fade Up / Down */
+.anim-fade-up { animation: fadeUpVid 0.6s var(--ease-smooth) forwards; }
+.anim-fade-down { animation: fadeDownVid 0.5s var(--ease-smooth) forwards; }
+@keyframes fadeUpVid { 
+  from { transform: translateY(80px); opacity: 0; } 
+  to { transform: translateY(0); opacity: 1; } 
+}
+@keyframes fadeDownVid { 
+  from { transform: translateY(0); opacity: 1; } 
+  to { transform: translateY(80px); opacity: 0; } 
+}
+
+/* 4. Rotate In / Out */
+.anim-rotate-in { animation: rotateInAnim 0.6s var(--ease-bounce) forwards; }
+.anim-rotate-out { animation: rotateOutAnim 0.5s ease-in forwards; }
+@keyframes rotateInAnim { 
+  from { transform: rotate(-45deg) scale(0.5); opacity: 0; } 
+  to { transform: rotate(0) scale(1); opacity: 1; } 
+}
+@keyframes rotateOutAnim { 
+  from { transform: rotate(45deg) scale(0.5); opacity: 1; } 
+  to { transform: rotate(90deg) scale(0); opacity: 0; } 
+}
+
+/* 5. Scale Bounce / Shrink */
+.anim-scale-bounce { animation: scaleBounceVid 0.7s var(--ease-bounce) forwards; }
+.anim-scale-shrink { animation: scaleShrinkVid 0.5s ease-in forwards; }
+@keyframes scaleBounceVid { 
+  0% { transform: scale(0); opacity: 0; } 
+  70% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; } 
+}
+@keyframes scaleShrinkVid { 
+  from { transform: scale(1); opacity: 1; } 
+  to { transform: scale(0); opacity: 0; } 
+}
