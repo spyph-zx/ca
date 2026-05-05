@@ -97,6 +97,11 @@ body { font-family: var(--font-sans); background: var(--dusk); color: var(--cham
   gap: clamp(14px, 3.5vh, 24px);
   opacity: 0; pointer-events: none;
   transition: opacity 0.55s var(--ease-smooth);
+  /* GPU-composited layer — prevents layout repaints during transitions */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 .screen.active { opacity: 1; pointer-events: all; }
 
@@ -200,10 +205,69 @@ body { font-family: var(--font-sans); background: var(--dusk); color: var(--cham
   width: clamp(150px, 52vw, 230px);
   height: clamp(150px, 52vw, 230px);
   object-fit: contain; border-radius: 16px;
-  opacity: 0; transition: opacity 0.4s var(--ease-smooth);
-  filter: drop-shadow(0 0 18px rgba(232,67,106,0.45)) drop-shadow(0 0 38px rgba(194,0,95,0.25));
+  opacity: 0;
+  transition: opacity 0.18s ease, filter 0.4s ease;
 }
 #gif.loaded { opacity: 1; }
+
+/* ── PER-SCENE GLOW EFFECTS ────────────────────────────────
+   Each scene: multiple colour stops, tight spread (max 18px),
+   unique rhythm. drop-shadow follows GIF shape exactly.
+────────────────────────────────────────────────────────── */
+
+/* Scene 0 — rose → blush → rose triple pulse */
+#gif.glow-scene0 { animation: glowScene0 2.4s ease-in-out infinite; }
+@keyframes glowScene0 {
+  0%   { filter: drop-shadow(0 0 4px #E8436A99) drop-shadow(0 0 10px #C2005F55); }
+  25%  { filter: drop-shadow(0 0 8px #FF6B9Dcc) drop-shadow(0 0 14px #E8436A88) drop-shadow(0 0 4px #FFB5C866); }
+  50%  { filter: drop-shadow(0 0 12px #E8436A)  drop-shadow(0 0 18px #C2005Faa) drop-shadow(0 0 6px #FF6B9D99); }
+  75%  { filter: drop-shadow(0 0 8px #FFB5C8bb) drop-shadow(0 0 14px #E8436A77) drop-shadow(0 0 4px #C2005F44); }
+  100% { filter: drop-shadow(0 0 4px #E8436A99) drop-shadow(0 0 10px #C2005F55); }
+}
+
+/* Scene 1 — magenta flicker with wine undertone */
+#gif.glow-scene1 { animation: glowScene1 1.9s ease-in-out infinite; }
+@keyframes glowScene1 {
+  0%   { filter: drop-shadow(0 0 5px #C2005Fbb) drop-shadow(0 0 10px #6E003066); }
+  20%  { filter: drop-shadow(0 0 10px #C2005F)  drop-shadow(0 0 16px #6E0030aa) drop-shadow(0 0 5px #E8436A55); }
+  45%  { filter: drop-shadow(0 0 14px #E8436Acc) drop-shadow(0 0 8px #C2005Faa) drop-shadow(0 0 4px #6E003077); }
+  65%  { filter: drop-shadow(0 0 6px #C2005F99)  drop-shadow(0 0 12px #6E003088) drop-shadow(0 0 4px #FF6B9D44); }
+  80%  { filter: drop-shadow(0 0 12px #C2005Fee) drop-shadow(0 0 6px #6E0030bb); }
+  100% { filter: drop-shadow(0 0 5px #C2005Fbb) drop-shadow(0 0 10px #6E003066); }
+}
+
+/* Scene 2 — blush → champagne → pink shimmer */
+#gif.glow-scene2 { animation: glowScene2 3s ease-in-out infinite; }
+@keyframes glowScene2 {
+  0%   { filter: drop-shadow(0 0 5px #FFB5C899) drop-shadow(0 0 10px #E8436A44); }
+  20%  { filter: drop-shadow(0 0 10px #FFB5C8cc) drop-shadow(0 0 6px #FFE8EF88) drop-shadow(0 0 14px #E8436A33); }
+  40%  { filter: drop-shadow(0 0 14px #FF6B9Dbb) drop-shadow(0 0 8px #FFB5C8aa) drop-shadow(0 0 4px #FFE8EF66); }
+  60%  { filter: drop-shadow(0 0 8px #FFE8EFcc)  drop-shadow(0 0 12px #FFB5C877) drop-shadow(0 0 5px #E8436A55); }
+  80%  { filter: drop-shadow(0 0 6px #FFB5C8bb)  drop-shadow(0 0 4px #FF6B9D66); }
+  100% { filter: drop-shadow(0 0 5px #FFB5C899) drop-shadow(0 0 10px #E8436A44); }
+}
+
+/* Scene 3 — wine throb with rose flash */
+#gif.glow-scene3 { animation: glowScene3 2.1s ease-in-out infinite; }
+@keyframes glowScene3 {
+  0%   { filter: drop-shadow(0 0 6px #6E0030aa) drop-shadow(0 0 10px #C2005F55); }
+  30%  { filter: drop-shadow(0 0 12px #6E0030dd) drop-shadow(0 0 8px #C2005Fbb)  drop-shadow(0 0 4px #E8436A33); }
+  55%  { filter: drop-shadow(0 0 16px #C2005Fee) drop-shadow(0 0 10px #6E0030cc) drop-shadow(0 0 6px #E8436A66); }
+  70%  { filter: drop-shadow(0 0 10px #E8436A99) drop-shadow(0 0 14px #C2005F88) drop-shadow(0 0 5px #6E003077); }
+  85%  { filter: drop-shadow(0 0 8px #6E0030cc)  drop-shadow(0 0 6px #C2005F88); }
+  100% { filter: drop-shadow(0 0 6px #6E0030aa) drop-shadow(0 0 10px #C2005F55); }
+}
+
+/* Scene 4 — rapid neon rose + magenta strobe */
+#gif.glow-scene4 { animation: glowScene4 1.5s ease-in-out infinite; }
+@keyframes glowScene4 {
+  0%   { filter: drop-shadow(0 0 6px #E8436Acc)  drop-shadow(0 0 10px #C2005F88); }
+  15%  { filter: drop-shadow(0 0 14px #FF6B9D)   drop-shadow(0 0 8px #E8436Aee)  drop-shadow(0 0 4px #FFB5C877); }
+  35%  { filter: drop-shadow(0 0 10px #C2005Fee)  drop-shadow(0 0 16px #E8436Acc) drop-shadow(0 0 6px #FF6B9D88); }
+  55%  { filter: drop-shadow(0 0 16px #FF6B9Dee)  drop-shadow(0 0 10px #C2005Fcc) drop-shadow(0 0 5px #E8436A99); }
+  75%  { filter: drop-shadow(0 0 8px #E8436Aee)   drop-shadow(0 0 12px #FF6B9Daa) drop-shadow(0 0 4px #C2005F66); }
+  100% { filter: drop-shadow(0 0 6px #E8436Acc)  drop-shadow(0 0 10px #C2005F88); }
+}
 
 .question-text {
   font-family: var(--font-serif); font-style: italic; font-weight: 400;
@@ -355,11 +419,15 @@ body { font-family: var(--font-sans); background: var(--dusk); color: var(--cham
 .video-frame video {
   display: block;
   width: 100%;
-  height: auto;               /* height follows video's natural aspect ratio */
-  max-height: 52vh;           /* never taller than 52% of screen */
-  object-fit: contain;        /* FULL clip visible — no cropping ever */
+  height: auto;
+  max-height: 52vh;
+  object-fit: contain;
   border-radius: 15px;
   position: relative; z-index: 1;
+  /* GPU decode hint — prevents jank on first frame */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform;
 }
 
 .video-caption {
@@ -394,12 +462,23 @@ body { font-family: var(--font-sans); background: var(--dusk); color: var(--cham
 .success-gif {
   width: clamp(130px, 46vw, 200px); height: clamp(130px, 46vw, 200px);
   object-fit: contain; border-radius: 16px;
-  filter: drop-shadow(0 0 20px rgba(232,67,106,0.5)) drop-shadow(0 0 40px rgba(194,0,95,0.3));
-  animation: gifFloat 3s ease-in-out infinite;
+  animation: gifFloat 3s ease-in-out infinite, glowSuccess 2s ease-in-out infinite;
 }
+
+/* Float up/down */
 @keyframes gifFloat {
   0%,100% { transform: translateY(0); }
   50%      { transform: translateY(-8px); }
+}
+
+/* Success gif — rose → blush → champagne → magenta cycle */
+@keyframes glowSuccess {
+  0%   { filter: drop-shadow(0 0 5px #E8436Acc)  drop-shadow(0 0 10px #C2005F77); }
+  20%  { filter: drop-shadow(0 0 12px #FF6B9Dee)  drop-shadow(0 0 8px #E8436Aaa)  drop-shadow(0 0 4px #FFB5C866); }
+  40%  { filter: drop-shadow(0 0 10px #FFB5C8dd)  drop-shadow(0 0 14px #FF6B9D88) drop-shadow(0 0 5px #FFE8EF55); }
+  60%  { filter: drop-shadow(0 0 14px #C2005Fee)  drop-shadow(0 0 8px #E8436Acc)  drop-shadow(0 0 4px #6E003066); }
+  80%  { filter: drop-shadow(0 0 8px #FF6B9Dcc)   drop-shadow(0 0 12px #FFB5C899) drop-shadow(0 0 5px #E8436A55); }
+  100% { filter: drop-shadow(0 0 5px #E8436Acc)  drop-shadow(0 0 10px #C2005F77); }
 }
 
 .success-emoji {
