@@ -75,7 +75,7 @@
       <span class="vf-corner vf-bl"></span>
       <span class="vf-corner vf-br"></span>
       <!-- Video — muted so bg music continues -->
-      <video id="vid1" playsinline muted>
+      <video id="vid1" playsinline muted preload="auto">
         <source src="video.mp4" type="video/mp4" />
       </video>
     </div>
@@ -114,8 +114,8 @@
       <span class="vf-corner vf-tr"></span>
       <span class="vf-corner vf-bl"></span>
       <span class="vf-corner vf-br"></span>
-      <!-- NOT muted — video2.mp4 audio plays -->
-      <video id="vid2" playsinline>
+      <!-- NOT muted — video2.mp4 audio plays; preload + loop set by script -->
+      <video id="vid2" playsinline loop>
         <source src="video2.mp4" type="video/mp4" />
       </video>
     </div>
